@@ -1,0 +1,7 @@
+rule all:
+	input:
+		"raw_data/rawFasta.fa"
+	output:
+		"analysis/genomeFasta.fa"
+	script:
+		"src/hifiasm.py"
