@@ -10,3 +10,6 @@
 [submodule "bin/mummer"]
 	path = bin/mummer
 	url = https://github.com/mummer4/mummer.git
+[submodule "bin/hifiasm"]
+	path = bin/hifiasm
+	url = https://github.com/chhylp123/hifiasm.git
