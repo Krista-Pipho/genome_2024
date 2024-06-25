@@ -1,37 +1,37 @@
-rule all:
-	input:
-		"raw_data/rawFasta.fa"
-	output:
-		"analysis/genomeFasta.fa"
-	script:
-		"src/hifiasm.py"
-
-
 #change to sample input so wildcard but user input on what data is being used in the pipeline
+#expand("data/samples/{sample}.fa", sample=SAMPLES)
 EXAMPLES =["L1","L2","R1","R2"]
 
 rule all:
     input:
-        "results/bc2010TRY.asm.bp.p_utg.gfa"
+        "results/bc2010TRY.asm.bp.p_utg.gfa",
+        "../results/{sample}.txt" #final txt file saying contig complete, kmer check complete
 
-rule assembly:
+rule assembly2:
     input:
-		"../raw_data/{sample}.fa"
-        #expand("data/samples/{sample}.fa", sample=SAMPLES)
+        "../raw_data/{sample}"
     output:
-        "../analysis/{sample}.bp.p_utg.gfa"
-    script:
-        "hifiAssembly.sh"
+        "../results/{sample}.bp.p_utg.gfa",
+        touch("../analysis/{sample}_hifiDONE.txt")
+    shell:
+        "sbatch -W hifiAssembly.sh {wildcards.sample}"
+        "echo finished"
+    #prefix argument ADD
+
+rule force_assembly:
+    input:
+        "../analysis/{sample}_hifiDONE.txt"
+    output:
+        "{sample}.txt"
 
 rule fasta_qc:
     input:
-        "../raw_data/{sample}.fa"
-        #"genomeFasta/{sample}.fasta"
+        "../raw_data/{sample}" #"genomeFasta/{sample}.fasta"
     output:
-        "../results/{sample}.linear_plot.png"   #can you make genomescope output to add name** bash command
-        #"fastaAnalyses/contig_{sample}.txt"
+        "../results/{sample}.linear_plot.png"   #can you make genomescope output to add name** bash command #"fastaAnalyses/contig_{sample}.txt"
     script:
         "kmerAnalysis.sh" #includes kmer and quast
+
 
 rule masking:
     input: 

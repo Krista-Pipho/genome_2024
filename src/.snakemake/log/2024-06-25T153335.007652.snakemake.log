@@ -1,0 +1,3 @@
+Building DAG of jobs...
+MissingRuleException:
+No rule to produce ../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa_hifiDONE.txt (if you use input functions make sure that they don't raise unexpected exceptions).

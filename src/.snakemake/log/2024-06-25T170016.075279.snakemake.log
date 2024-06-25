@@ -1,0 +1,37 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 48
+Rules claiming more threads will be scaled down.
+Job stats:
+job               count
+--------------  -------
+assembly2             1
+force_assembly        1
+total                 2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Jun 25 17:00:16 2024]
+localrule assembly2:
+    input: ../raw_data/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.bp.p_utg.gfa, ../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa_hifiDONE.txt
+    jobid: 1
+    reason: Missing output files: ../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa_hifiDONE.txt
+    wildcards: sample=m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    resources: tmpdir=/tmp
+
+[Tue Jun 25 17:00:16 2024]
+Error in rule assembly2:
+    jobid: 1
+    input: ../raw_data/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.bp.p_utg.gfa, ../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa_hifiDONE.txt
+    shell:
+        sbatch -W hifiAssembly.sh m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa | echo finished
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-06-25T170016.075279.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

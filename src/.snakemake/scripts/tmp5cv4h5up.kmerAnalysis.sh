@@ -1,4 +1,13 @@
 #!/bin/bash
+
+declare -A snakemake_input=( [0]="../raw_data/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa" )
+declare -A snakemake_output=( [0]="../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.linear_plot.png" )
+declare -A snakemake_params=( )
+declare -A snakemake_wildcards=( [0]="m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa" [sample]="m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa" )
+declare -A snakemake_resources=( [0]="1" [_cores]="1" [1]="1" [_nodes]="1" [2]="/tmp" [tmpdir]="/tmp" )
+declare -A snakemake_log=( )
+declare -A snakemake_config=( )
+declare -A snakemake=( [threads]="1" [rule]="fasta_qc" [bench_iteration]="None" [scriptdir]="/work/alh166/genome_2024/src" )
 set -x
 #SBATCH --mem=24G
 #SBATCH --cpus-per-task=10

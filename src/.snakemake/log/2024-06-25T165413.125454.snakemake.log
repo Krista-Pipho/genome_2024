@@ -1,0 +1,35 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 48
+Rules claiming more threads will be scaled down.
+Job stats:
+job               count
+--------------  -------
+assembly2             1
+force_assembly        1
+total                 2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Jun 25 16:54:13 2024]
+localrule assembly2:
+    input: ../raw_data/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.bp.p_utg.gfa, ../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa_hifiDONE.txt
+    jobid: 1
+    reason: Missing output files: ../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa_hifiDONE.txt
+    wildcards: sample=m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    resources: tmpdir=/tmp
+
+Touching output file ../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa_hifiDONE.txt.
+Waiting at most 5 seconds for missing files.
+MissingOutputException in rule assembly2 in file /work/alh166/genome_2024/src/Snakefile, line 10:
+Job 1  completed successfully, but some output files are missing. Missing files after 5 seconds. This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait:
+../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.bp.p_utg.gfa (missing locally, parent dir contents: transformed_log_plot.png, summary.txt, progress.txt, log_plot.png, linear_plot.png, model.txt, transformed_linear_plot.png, maskedGenome.fa)
+Removing output files of failed job assembly2 since they might be corrupted:
+../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa_hifiDONE.txt
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-06-25T165413.125454.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

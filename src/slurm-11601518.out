@@ -1,1 +1,2 @@
 + ../bin/jellyfish count -C -m 20 -s 1000000000 -t 10 ../raw_data/m84165_231212_214911_s4.hifi_reads.bc2010.bam.fa -o ../analysis/bc2010YAY.jf
+slurmstepd: error: *** JOB 11601518 ON dcc-core-48 CANCELLED AT 2024-06-25T14:42:52 ***

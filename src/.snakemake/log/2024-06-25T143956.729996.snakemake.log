@@ -1,0 +1,35 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 10
+Rules claiming more threads will be scaled down.
+Job stats:
+job         count
+--------  -------
+fasta_qc        1
+total           1
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Jun 25 14:39:57 2024]
+localrule fasta_qc:
+    input: ../raw_data/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.linear_plot.png
+    jobid: 0
+    reason: Missing output files: ../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.linear_plot.png
+    wildcards: sample=m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    resources: tmpdir=/tmp
+
+Terminating processes on user request, this might take some time.
+RuleException:
+CalledProcessError in file /work/alh166/genome_2024/src/Snakefile, line 24:
+Command 'set -euo pipefail;  bash /work/alh166/genome_2024/src/.snakemake/scripts/tmp_r48k6gq.kmerAnalysis.sh' died with <Signals.SIGINT: 2>.
+[Tue Jun 25 14:41:29 2024]
+Error in rule fasta_qc:
+    jobid: 0
+    input: ../raw_data/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.linear_plot.png
+
+Complete log: .snakemake/log/2024-06-25T143956.729996.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
