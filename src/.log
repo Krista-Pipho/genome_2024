@@ -1,0 +1,7 @@
+Reads has been loaded.
+Loading ma_hit_ts from disk... 
+ma_hit_ts has been read.
+Loading ma_hit_ts from disk... 
+ma_hit_ts has been read.
+[M::ha_assemble::0.003*1.26] ==> loaded corrected reads and overlaps from disk
+[M::ha_opt_update_cov_min] updated max_n_chain to 100

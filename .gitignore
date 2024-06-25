@@ -1,4 +1,5 @@
 ignoreMe.txt
 raw_data/
 src/bc2010*
-analysis/*.jf
+analysis/
+
