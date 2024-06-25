@@ -13,8 +13,10 @@ set -x
 
 #/*/genome_2024/*/jellyfish count -C -m $1 -s 1000000000 -t 10 /work/alh166/genome_2024/raw_data/m84165_231212_214911_s4.hifi_reads.bc2010.bam.fa -o /work/alh166/genome_2024/analysis/bc2010.jf 
 
-/work/alh166/genome_2024/bin/jellyfish-2.3.1/bin/jellyfish count -C -m $1 -s 1000000000 -t 10 /work/alh166/genome_2024/raw_data/$2 -o /work/alh166/genome_2024/analysis/$3.jf 
- /work/alh166/genome_2024/bin/jellyfish-2.3.1/bin/jellyfish histo -t 10 /work/alh166/genome_2024/analysis/$3.jf > /work/alh166/genome_2024/analysis/$3.histo
+echo Enter desired k-mer size:
+read kmer
+../bin/jellyfish count -C -m $kmer -s 1000000000 -t 10 ../raw_data/{wildcards.sample} -o ../analysis/{wildcards.sample}.jf 
+../bin/jellyfish histo -t 10 ../analysis/{wildcards.sample}.jf > ../analysis/{wildcards.sample}.histo
 #var ourpur or ../Lvar.....
 #output is  /PATH/PATH/Lvar_scaffolds.jf and /PATH/Lvar_scaffolds.histo
-/work/alh166/genome_2024/bin/genomescope2.0/genomescope.R -i /work/alh166/genome_2024/analysis/$3.histo -o /work/alh166/genome_2024/results -k $1
+../bin/genomescope2.0/genomescope.R -i ../analysis/{wildcards.sample}.histo -o ../results -k $kmer

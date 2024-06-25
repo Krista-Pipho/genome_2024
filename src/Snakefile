@@ -5,3 +5,67 @@ rule all:
 		"analysis/genomeFasta.fa"
 	script:
 		"src/hifiasm.py"
+
+
+#change to sample input so wildcard but user input on what data is being used in the pipeline
+EXAMPLES =["L1","L2","R1","R2"]
+
+rule all:
+    input:
+        "results/bc2010TRY.asm.bp.p_utg.gfa"
+
+rule assembly:
+    input:
+		"../raw_data/{sample}.fa"
+        #expand("data/samples/{sample}.fa", sample=SAMPLES)
+    output:
+        "../analysis/{sample}.bp.p_utg.gfa"
+    script:
+        "hifiAssembly.sh"
+
+rule fasta_qc:
+    input:
+        "../raw_data/{sample}.fa"
+        #"genomeFasta/{sample}.fasta"
+    output:
+        "../results/{sample}.linear_plot.png"   #can you make genomescope output to add name** bash command
+        #"fastaAnalyses/contig_{sample}.txt"
+    script:
+        "kmerAnalysis.sh" #includes kmer and quast
+
+rule masking:
+    input: 
+        "genomeFasta/{sample}.fasta"
+    output:
+        "maskedFasta/{sample}.fasta"
+    script:
+        "scripts/maskingFasta.py"
+
+rule geneAnnotations:
+    input:
+        "maskedFasta/{sample}.fasta"
+    output:
+        "fastaAnalyses/geneAnnotation_{sample}.gff",
+    script:
+        "scripts/geneGFF.py" 
+
+rule noncodingAnnotations:
+    input:
+        "maskedFasta/{sample}.fasta"
+    output:
+        "fastaAnalyses/noncodingAnnotation_{sample}.gff"
+    script:
+        "scripts/noncodingGFF.py" 
+
+rule combinedGFF:
+    input:
+        "fastaAnalyses/geneAnnotation_{sample}.gff",
+        "fastaAnalyses/noncodingAnnotation_{sample}.gff"
+    output:
+        "fastaAnalyses/allAnnotation_{sample}.gff"
+    script:
+        "combineGFF.py"
+
+
+
+
