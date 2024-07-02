@@ -1,6 +1,10 @@
 ignoreMe.txt
 raw_data/
 src/bc2010*
+src/bc2009*
+src/bc2011*
+src/slurm*
+results/bc2010*
 analysis/
 bin/Hifiasm/
 

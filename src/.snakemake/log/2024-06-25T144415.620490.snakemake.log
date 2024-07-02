@@ -20,3 +20,4 @@ localrule fasta_qc:
     wildcards: sample=m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
     resources: tmpdir=/tmp
 
+Will exit after finishing currently running jobs (scheduler).

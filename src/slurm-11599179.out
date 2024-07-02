@@ -1,5 +1,0 @@
-+ /work/alh166/genome_2024/bin/jellyfish-2.3.1/bin/jellyfish count -C -m 20 -s 1000000000 -t 10 /work/alh166/genome_2024/raw_data/m84165_231212_214911_s4.hifi_reads.bc2010.bam.fa -o /work/alh166/genome_2024/analysis/bc2010TRY.jf
-/var/spool/slurmd/job11599179/slurm_script: line 16: 464646 Killed                  /work/alh166/genome_2024/bin/jellyfish-2.3.1/bin/jellyfish count -C -m $1 -s 1000000000 -t 10 /work/alh166/genome_2024/raw_data/$2 -o /work/alh166/genome_2024/analysis/$3.jf
-+ /work/alh166/genome_2024/bin/jellyfish-2.3.1/bin/jellyfish histo -t 10 /work/alh166/genome_2024/analysis/bc2010TRY.jf
-slurmstepd: error: *** JOB 11599179 ON dcc-core-49 CANCELLED AT 2024-06-25T14:42:57 ***
-slurmstepd: error: Detected 1 oom_kill event in StepId=11599179.batch. Some of the step tasks have been OOM Killed.

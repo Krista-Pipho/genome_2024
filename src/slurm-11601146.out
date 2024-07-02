@@ -1,2 +1,0 @@
-+ ../bin/jellyfish count -C -m 20 -s 1000000000 -t 10 /work/alh166/genome_2024/raw_data/m84165_231212_214911_s4.hifi_reads.bc2010.bam.fa -o /work/alh166/genome_2024/analysis/bc2010YAY.jf
-slurmstepd: error: *** JOB 11601146 ON dcc-core-48 CANCELLED AT 2024-06-25T12:07:15 ***

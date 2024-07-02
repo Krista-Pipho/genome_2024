@@ -1,4 +1,0 @@
-SyntaxError in file /work/alh166/genome_2024/src/Snakefile, line 14:
-invalid syntax. Perhaps you forgot a comma?:
-        "../raw_data/{sample}" #"genomeFasta/{sample}.fasta"
-
