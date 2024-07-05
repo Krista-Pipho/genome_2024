@@ -1,4 +1,6 @@
 #!/bin/bash
+module load Java/1.8.0_60
+module load samtools/1.9
 
 #make loop start at 1 bc unitig num start at 1 (bash starts at 1)
 #$1 $2 are samples
@@ -18,14 +20,18 @@ do
     scaffoldName=$(echo $scaffold | cut -d ' ' -f 1)
     scaffoldLen=$(echo $scaffold | cut -d ' ' -f 2)
 
-    samples=$scaffoldLen/100
-    samples=(S1 S2 S3 S4) #array
+    samplePoints=$scaffoldLen/100
+    path="../results/readAlign/"
+    sampleData=("${path}S1.dedup.bam" "${path}S2.dedup.bam" "${path}S3.dedup.bam" "${path}S4.dedup.bam") #array
+    samples=(S1 S2 S3 S4)
  
     #makefileNames
-    fileNames="___ --- ---- ---  {sample}.$i"
-    meanCov=plotCoverage -b $1 $2 -o coverage_plot.png --outRawCounts $fileNames> get mean
-    #region = scaffold
-    for j in {1...4}
+    for i in {0..3}
+    do
+        plotCoverage -b ${sampleData[i]} $scaffoldName -o "./scaffoldCov/${samples[i]}.coverage_plot.png" --outRawCounts "./scaffoldCov/${samples[i]}.$scaffoldName.txt"
+    done
+    
+    for j in {0..3}
     do
         touch sampleCov >> {sample} $scaffoldName $meanCov >> append to file
     done

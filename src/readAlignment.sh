@@ -7,8 +7,8 @@
 REF=../results/readAlign/sbc2010.asm.p_utg.fa #file needs to be indexable to be a reference (able to make fai from faidx aka rm S from hifi)
 R1=/work/kp275/20240425_gynandromorph_data_wip/TN2L_S1/TN2L_S1_1.fastq.gz
 R2=/work/kp275/20240425_gynandromorph_data_wip/TN2L_S1/TN2L_S1_2.fastq.gz
-BAM=../results/readAlign/S1.bc2010.bam
-DEDUP_BAM=../results/readAlign/S1.bc2010.dedup.bam
+BAM=../results/readAlign/S1.bam
+DEDUP_BAM=../results/readAlign/S1.dedup.bam
 
 #S1
 
