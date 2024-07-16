@@ -4,7 +4,9 @@ src/bc2010*
 src/bc2009*
 src/bc2011*
 src/slurm*
-results/bc2010*
+results/bc20*
+results/S1*
 analysis/
 bin/Hifiasm/
-
+2011_align/S*
+2011/align/bc2011*
