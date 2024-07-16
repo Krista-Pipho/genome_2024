@@ -1,0 +1,5 @@
+sample	mean	std	min	25%	50%	75%	max
+S1.dedup.bam	7.73	21.04	0	0.0	1.0	7.0	441	
+S2.dedup.bam	7.65	19.76	0	0.0	1.0	7.0	376	
+S3.dedup.bam	7.97	20.98	0	0.0	1.0	7.0	407	
+S4.dedup.bam	7.94	22.79	0	0.0	1.0	6.0	580	

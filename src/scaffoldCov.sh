@@ -2,7 +2,8 @@
 #SBATCH --mem=50G
 #SBATCH --cpus-per-task=24
 #SBATCH --partition scavenger
-#SBATCH --array=0-1
+#SBATCH --array=0-114
+#114 lines aka scaffolds in the fai for 2011
 
 module load Java/1.8.0_60
 module load samtools/1.9
@@ -26,7 +27,7 @@ averages=""
 
 while read sample mean std min p25 p50 p75 max; do
     averages="${averages} ${mean}"
-done < ${scaffoldName}_coverageStats.txt
+done < ../results/2011_align/${scaffoldName}_coverageStats.txt
 
 averages=$(echo "$averages" | awk '{print $2 " " $3 " " $4 " " $5}')
 touch ../results/2011_align/scaffoldCov.txt | echo $scaffoldName $averages | tr ' ' '\t' >> ../results/2011_align/scaffoldCov.txt
