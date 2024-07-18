@@ -8,6 +8,5 @@ results/bc20*
 results/S1*
 analysis/
 bin/Hifiasm/
-results/2011_align/S*
-results/2011_align/bc2011*
+results/2011_align/
 results/readAlign/
