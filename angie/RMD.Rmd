@@ -1,0 +1,21 @@
+---
+title: "Genome Analysis of the Heliconius butterfly"
+author: "Angie Huang"
+bibliography: citations.bib
+link-citations: true
+---
+
+@Lukhtanov2018
+
+![Cool Butterfly Image](images/shutterstock_560609749-scaled.jpg)
+
+![Cool Butterfly Image](images/d7hftxdivxxvm.cloudfront.jpg)
+
+::: {#refs}
+:::  
+#<div id="refs"></div>
+#refs is to make the reference section pop up first instead of r session info 
+
+```{r Session Information}
+sessionInfo()
+```

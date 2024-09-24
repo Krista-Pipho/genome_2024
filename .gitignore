@@ -10,3 +10,4 @@ analysis/
 bin/Hifiasm/
 results/2011_align/
 results/readAlign/
+.Rproj.user
