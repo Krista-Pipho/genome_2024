@@ -1,5 +1,4 @@
 
-
 rule targets:
     input:
         "../results/bc2011.linear_plot.png", #fasta_qc
@@ -8,7 +7,7 @@ rule targets:
 
 rule assembly:
     input:
-        rawDataPath = "../raw_data/TN2L_S1.fasta"                                    
+        rawDataPath = "../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa"                                    
     output:
         "../analysis/{sample}.p_ctg.fa",
         "../logs/{sample}.log"
@@ -19,8 +18,7 @@ rule assembly:
 
 rule fasta_qc:
     input:
-        rawDataPath = "../raw_data/TN2L_S1.fasta"                                    
-
+        rawDataPath = "../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa"                                    
     output:
         "../results/{sample}.linear_plot.png"   #can you make genomescope output to add name** bash command #"fastaAnalyses/contig_{sample}.txt"
     shell:
