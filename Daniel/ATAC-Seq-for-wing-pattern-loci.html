@@ -431,11 +431,11 @@ are using for peak calling</p>
 <p>check that it works macs3 callpeak -h</p>
 <p>now turn sam into bam module load samtools/1.9 samtools view -bS
 ERR5466846_aligned.sam &gt; ERR5466846_aligned.bam</p>
-<p>now, prep data to give to slurm vim peak_call_1st_atac.sh inside,
-#!/bin/bash #SBATCH –mem=100G #SBATCH –cpus-per-task 24 #SBATCH
-–partition scavenger macs3 callpeak -t ERR5466846_aligned.bam -n
-ERR5466846 -f BAMPE #the extra stuff: -t tells it look at this file, -n
-gives it a name for output file.</p>
+<p>(DO NOT DO THESE LAST 5 THINGS FOR COVERAGE) now, prep data to give
+to slurm vim peak_call_1st_atac.sh inside, #!/bin/bash #SBATCH –mem=100G
+#SBATCH –cpus-per-task 24 #SBATCH –partition scavenger macs3 callpeak -t
+ERR5466846_aligned.bam -n ERR5466846 -f BAMPE #the extra stuff: -t tells
+it look at this file, -n gives it a name for output file.</p>
 <p>esc :wq</p>
 <p>sbatch peak_call_1st_atac.sh - gives aligned bam and atac to slurm
 and tells slurm to call peaks</p>
@@ -444,7 +444,7 @@ and tells slurm to call peaks</p>
 window, not just + new tab) scp <a href="mailto:dsl42@dcc-login.oit.duke.edu" class="email">dsl42@dcc-login.oit.duke.edu</a>:/hpc/home/dsl42/ERR5466846_peaks.narrowPeak
 /mnt/c/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/</p>
 <p>10/1 1. login to dcc</p>
-<p>ssh <a href="mailto:dsl42@dcc-login.oit.duke.edu" class="email">dsl42@dcc-login.oit.duke.edu</a> module load samtools/1.9
+<p>(pickup here for coverage) ssh <a href="mailto:dsl42@dcc-login.oit.duke.edu" class="email">dsl42@dcc-login.oit.duke.edu</a> module load samtools/1.9
 - sorts the bam</p>
 <p>samtools sort ERR5466846_aligned.bam -o ERR5466846_sorted.bam</p>
 <ul>
@@ -469,6 +469,8 @@ on non-model organism - hard - centromeric vs holocentric distribution
 of repetitive elements? - is it repetitive sequence that accounts for
 size dif in mel vs erato and if so what kind a one area? are all
 chromosomes bigger? - is there lepidopetera that is not locoentric</p>
+<p>!!! if you stored file in /work/dsl42 take out /hpc/ from the code
+you use to pull it onto your computer</p>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Livraghi2021" class="csl-entry">
 Livraghi, Luca, Joseph J. Hanly, Steven M. Van Bellghem, Gabriela
