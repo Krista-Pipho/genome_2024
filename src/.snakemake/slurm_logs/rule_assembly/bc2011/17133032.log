@@ -1,0 +1,69 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided remote nodes: 1
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct  3 11:08:14 2024]
+rule assembly:
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../analysis/bc2011.p_ctg.fa, ../logs/bc2011.log
+    jobid: 0
+    reason: Forced execution
+    wildcards: sample=bc2011
+    resources: mem_mb=8000, mem_mib=7630, disk_mb=16779, disk_mib=16002, tmpdir=<TBD>, runtime=100
+
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Provided resources: mem_mb=8000, mem_mib=7630, disk_mb=16779, disk_mib=16002
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct  3 11:08:15 2024]
+localrule assembly:
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../analysis/bc2011.p_ctg.fa, ../logs/bc2011.log
+    jobid: 0
+    reason: Forced execution
+    wildcards: sample=bc2011
+    resources: mem_mb=8000, mem_mib=7630, disk_mb=16779, disk_mib=16002, tmpdir=/tmp, runtime=100
+
+hifiAssembly.sh: line 10: 2294487 Killed                  ../bin/hifiasm -o ../analysis/${output_name} -t48 ${raw_data} 2> ../logs/${output_name}.log
+[Thu Oct  3 11:08:17 2024]
+Error in rule assembly:
+    jobid: 0
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../analysis/bc2011.p_ctg.fa, ../logs/bc2011.log
+    shell:
+        
+        bash hifiAssembly.sh bc2011 ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Removing output files of failed job assembly since they might be corrupted:
+../logs/bc2011.log
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Storing output in storage.
+WorkflowError:
+At least one job did not complete successfully.
+slurmstepd: error: Detected 1 oom_kill event in StepId=17133032.0. Some of the step tasks have been OOM Killed.
+srun: error: dcc-core-34: task 0: Out Of Memory
+[Thu Oct  3 11:08:17 2024]
+Error in rule assembly:
+    jobid: 0
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../analysis/bc2011.p_ctg.fa, ../logs/bc2011.log
+    shell:
+        
+        bash hifiAssembly.sh bc2011 ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Storing output in storage.
+WorkflowError:
+At least one job did not complete successfully.
