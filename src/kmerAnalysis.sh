@@ -13,12 +13,14 @@ set -x
 
 #/*/genome_2024/*/jellyfish count -C -m $1 -s 1000000000 -t 10 /work/alh166/genome_2024/raw_data/m84165_231212_214911_s4.hifi_reads.bc2010.bam.fa -o /work/alh166/genome_2024/analysis/bc2010.jf 
 
-echo Enter desired k-mer size:
+#desired kmer size
 kmer=20
-../bin/jellyfish count -C -m $kmer -s 1000000000 -t 10 ../raw_data/"${snakemake_wildcards[sample]}" -o ../analysis/"${snakemake_wildcards[sample]}".jf
-../bin/jellyfish histo -t 10 ../analysis/"${snakemake_wildcards[sample]}".jf > ../analysis/"${snakemake_wildcards[sample]}".histo
-#var ourpur or ../Lvar.....
-#output is  /PATH/PATH/Lvar_scaffolds.jf and /PATH/Lvar_scaffolds.histo
-../bin/genomescope2.0/genomescope.R -i ../analysis/${snakemake_wildcards[sample]}.histo -o ../results -k $kmer
 
-#Failed to open input file '../analysis/m84165_231212_214911_s4.hifi_reads.bc2011.bam.jf'
+output_name=$1
+raw_data=$2
+
+../bin/jellyfish count -C -m $kmer -s 1000000000 -t 10 ${raw_data} -o ../analysis/${output_name}.jf
+../bin/jellyfish histo -t 10 ../analysis/${output_name}.jf > ../analysis/${output_name}.histo
+
+../bin/genomescope2.0/genomescope.R -i ../analysis/${output_name}.histo -o ../results -k $kmer
+

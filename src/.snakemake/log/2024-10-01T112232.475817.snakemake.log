@@ -1,0 +1,79 @@
+Building DAG of jobs...
+SLURM run ID: 4927b2b8-1b5d-41a5-9a43-7379cfed1d25
+Using shell: /usr/bin/bash
+Provided remote nodes: 10
+Job stats:
+job                     count
+--------------------  -------
+assembly                    1
+combinedGFF                 1
+fasta_qc                    1
+geneAnnotations             1
+masking                     1
+noncodingAnnotations        1
+targets                     1
+total                       7
+
+Select jobs to execute...
+Execute 2 jobs...
+
+[Tue Oct  1 11:22:35 2024]
+rule fasta_qc:
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/bc2011.linear_plot.png
+    jobid: 1
+    reason: Missing output files: ../results/bc2011.linear_plot.png
+    wildcards: sample=bc2011
+    resources: tmpdir=<TBD>
+
+No SLURM account given, trying to guess.
+Unable to guess SLURM account. Trying to proceed without.
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+No job memory information ('mem_mb' or 'mem_mb_per_cpu') is given - submitting without. This might or might not work on your cluster.
+Job 1 has been submitted with SLURM jobid 16998097 (log: /work/alh166/genome_2024/src/.snakemake/slurm_logs/rule_fasta_qc/bc2011/16998097.log).
+
+[Tue Oct  1 11:22:37 2024]
+rule assembly:
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../analysis/bc2011.p_ctg.fa, ../logs/bc2011.log
+    jobid: 5
+    reason: Missing output files: ../analysis/bc2011.p_ctg.fa
+    wildcards: sample=bc2011
+    resources: tmpdir=<TBD>
+
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+No job memory information ('mem_mb' or 'mem_mb_per_cpu') is given - submitting without. This might or might not work on your cluster.
+Job 5 has been submitted with SLURM jobid 16998098 (log: /work/alh166/genome_2024/src/.snakemake/slurm_logs/rule_assembly/bc2011/16998098.log).
+[Tue Oct  1 11:23:12 2024]
+Error in rule fasta_qc:
+    message: SLURM-job '16998097' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 1
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/bc2011.linear_plot.png
+    log: /work/alh166/genome_2024/src/.snakemake/slurm_logs/rule_fasta_qc/bc2011/16998097.log (check log file(s) for error details)
+    shell:
+        
+        bash kmerAnalysis.sh ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 16998097
+
+[Tue Oct  1 11:23:12 2024]
+Error in rule assembly:
+    message: SLURM-job '16998098' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 5
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../analysis/bc2011.p_ctg.fa, ../logs/bc2011.log
+    log: /work/alh166/genome_2024/src/.snakemake/slurm_logs/rule_assembly/bc2011/16998098.log (check log file(s) for error details)
+    shell:
+        
+        bash hifiAssembly.sh bc2011 ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 16998098
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-10-01T112232.475817.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

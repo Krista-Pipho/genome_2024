@@ -1,0 +1,75 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided remote nodes: 1
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Oct  1 11:32:46 2024]
+rule fasta_qc:
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/bc2011.linear_plot.png
+    jobid: 0
+    reason: Forced execution
+    wildcards: sample=bc2011
+    resources: mem_mb=8000, mem_mib=7630, disk_mb=16779, disk_mib=16002, tmpdir=<TBD>
+
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Provided resources: mem_mb=8000, mem_mib=7630, disk_mb=16779, disk_mib=16002
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Oct  1 11:32:50 2024]
+localrule fasta_qc:
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/bc2011.linear_plot.png
+    jobid: 0
+    reason: Forced execution
+    wildcards: sample=bc2011
+    resources: mem_mb=8000, mem_mib=7630, disk_mb=16779, disk_mib=16002, tmpdir=/tmp
+
++ echo Enter desired k-mer size:
+Enter desired k-mer size:
++ kmer=20
++ ../bin/jellyfish count -C -m 20 -s 1000000000 -t 10 ../raw_data/ -o ../analysis/.jf
+kmerAnalysis.sh: line 18: 784432 Killed                  ../bin/jellyfish count -C -m $kmer -s 1000000000 -t 10 ../raw_data/"${snakemake_wildcards[sample]}" -o ../analysis/"${snakemake_wildcards[sample]}".jf
++ ../bin/jellyfish histo -t 10 ../analysis/.jf
+Failed to open input file '../analysis/.jf'
++ ../bin/genomescope2.0/genomescope.R -i ../analysis/.histo -o ../results -k 20
+kmerAnalysis.sh: line 22: ../bin/genomescope2.0/genomescope.R: No such file or directory
+[Tue Oct  1 11:32:52 2024]
+Error in rule fasta_qc:
+    jobid: 0
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/bc2011.linear_plot.png
+    shell:
+        
+        bash kmerAnalysis.sh ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Storing output in storage.
+WorkflowError:
+At least one job did not complete successfully.
+slurmstepd: error: Detected 1 oom_kill event in StepId=16998211.0. Some of the step tasks have been OOM Killed.
+srun: error: dcc-core-49: task 0: Out Of Memory
+[Tue Oct  1 11:32:53 2024]
+Error in rule fasta_qc:
+    jobid: 0
+    input: ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/bc2011.linear_plot.png
+    shell:
+        
+        bash kmerAnalysis.sh ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Storing output in storage.
+WorkflowError:
+At least one job did not complete successfully.

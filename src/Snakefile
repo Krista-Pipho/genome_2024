@@ -1,6 +1,8 @@
 
 rule targets:
     input:
+        "../analysis/bc2011.p_ctg.fa", #assembly
+        "../logs/bc2011.log",
         "../results/bc2011.linear_plot.png", #fasta_qc
         "../results/allAnnotation_bc2011.gff" #annotations
         
@@ -11,10 +13,13 @@ rule assembly:
     output:
         "../analysis/{sample}.p_ctg.fa",
         "../logs/{sample}.log"
+    resources:
+        runtime = 100
     shell:
         """
         bash hifiAssembly.sh {wildcards.sample} {input.rawDataPath}
         """
+    
 
 rule fasta_qc:
     input:
@@ -23,7 +28,7 @@ rule fasta_qc:
         "../results/{sample}.linear_plot.png"   #can you make genomescope output to add name** bash command #"fastaAnalyses/contig_{sample}.txt"
     shell:
         """
-        bash kmerAnalysis.sh {input.rawDataPath}
+        bash kmerAnalysis.sh {wildcards.sample} {input.rawDataPath}
         """
 
 

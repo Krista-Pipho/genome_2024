@@ -1,0 +1,4 @@
+Building DAG of jobs...
+WildcardError in rule targets in file /work/alh166/genome_2024/src/Snakefile, line 2:
+Wildcards in input files cannot be determined from output files: (rule targets, line 2, /work/alh166/genome_2024/src/Snakefile)
+'sample'
