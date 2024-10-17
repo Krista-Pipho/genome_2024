@@ -1,7 +1,7 @@
 
 rule targets:
     input:
-        "../analysis/bc2011.p_ctg.fa", #assembly
+        "../analysis/snake/bc2011.bp.p_ctg.gfa", #assembly
         "../logs/bc2011.log",
         "../results/bc2011.linear_plot.png", #fasta_qc
         "../results/allAnnotation_bc2011.gff" #annotations
@@ -9,12 +9,13 @@ rule targets:
 
 rule assembly:
     input:
-        rawDataPath = "../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa"                                    
+        rawDataPath = "../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa"                                   
     output:
-        "../analysis/{sample}.p_ctg.fa",
+        "../analysis/snake/{sample}.bp.p_ctg.gfa",
         "../logs/{sample}.log"
     resources:
-        runtime = 100
+        runtime = "6h",
+        mem_mb = 50000
     shell:
         """
         bash hifiAssembly.sh {wildcards.sample} {input.rawDataPath}
@@ -23,7 +24,7 @@ rule assembly:
 
 rule fasta_qc:
     input:
-        rawDataPath = "../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa"                                    
+        rawDataPath = "../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa"                                    
     output:
         "../results/{sample}.linear_plot.png"   #can you make genomescope output to add name** bash command #"fastaAnalyses/contig_{sample}.txt"
     shell:
@@ -34,9 +35,9 @@ rule fasta_qc:
 
 rule masking:
     input: 
-        "../analysis/{sample}.p_ctg.fa"
+        "../analysis/snake/{sample}.bp.p_ctg.gfa"
     output:
-        "../results/{sample}.p_ctg.masked.fasta"
+        "../results/{sample}.bp.p_ctg.masked.fasta"
     shell:
         """
         bash scripts/maskingFasta.py"
@@ -44,7 +45,7 @@ rule masking:
 
 rule geneAnnotations:
     input:
-        "../results/{sample}.p_ctg.masked.fasta"
+        "../results/{sample}.bp.p_ctg.masked.fasta"
     output:
         "../analysis/geneAnnotation_{sample}.gff"
     script:
@@ -52,7 +53,7 @@ rule geneAnnotations:
 
 rule noncodingAnnotations:
     input:
-        "../results/{sample}.p_ctg.masked.fasta"
+        "../results/{sample}.bp.p_ctg.masked.fasta"
     output:
         "../analysis/noncodingAnnotation_{sample}.gff"
     script:

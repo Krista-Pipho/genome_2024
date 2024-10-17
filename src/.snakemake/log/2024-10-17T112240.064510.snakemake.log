@@ -1,0 +1,58 @@
+Building DAG of jobs...
+SLURM run ID: a53f186c-4d55-43fc-85bc-2862c6411b55
+Using shell: /usr/bin/bash
+Provided remote nodes: 10
+Job stats:
+job                     count
+--------------------  -------
+assembly                    1
+combinedGFF                 1
+fasta_qc                    1
+geneAnnotations             1
+masking                     1
+noncodingAnnotations        1
+targets                     1
+total                       7
+
+Select jobs to execute...
+Execute 2 jobs...
+
+[Thu Oct 17 11:22:44 2024]
+rule assembly:
+    input: ../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../analysis/snake/bc2011.bp.p_ctg.gfa, ../logs/bc2011.log
+    jobid: 1
+    reason: Missing output files: ../analysis/snake/bc2011.bp.p_ctg.gfa, ../logs/bc2011.log
+    wildcards: sample=bc2011
+    resources: tmpdir=<TBD>, runtime=360, mem_mb=50000, mem_mib=47684
+
+No SLURM account given, trying to guess.
+Unable to guess SLURM account. Trying to proceed without.
+Job 1 has been submitted with SLURM jobid 18097051 (log: /work/alh166/genome_2024/src/.snakemake/slurm_logs/rule_assembly/bc2011/18097051.log).
+
+[Thu Oct 17 11:22:46 2024]
+rule fasta_qc:
+    input: ../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/bc2011.linear_plot.png
+    jobid: 2
+    reason: Missing output files: ../results/bc2011.linear_plot.png
+    wildcards: sample=bc2011
+    resources: tmpdir=<TBD>
+
+No wall time information given. This might or might not work on your cluster. If not, specify the resource runtime in your rule or as a reasonable default via --default-resources.
+No job memory information ('mem_mb' or 'mem_mb_per_cpu') is given - submitting without. This might or might not work on your cluster.
+Job 2 has been submitted with SLURM jobid 18097052 (log: /work/alh166/genome_2024/src/.snakemake/slurm_logs/rule_fasta_qc/bc2011/18097052.log).
+[Thu Oct 17 11:29:11 2024]
+Error in rule fasta_qc:
+    message: SLURM-job '18097052' failed, SLURM status is: 'FAILED'. For further error details see the cluster/cloud log and the log files of the involved rule(s).
+    jobid: 2
+    input: ../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+    output: ../results/bc2011.linear_plot.png
+    log: /work/alh166/genome_2024/src/.snakemake/slurm_logs/rule_fasta_qc/bc2011/18097052.log (check log file(s) for error details)
+    shell:
+        
+        bash kmerAnalysis.sh bc2011 ../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    external_jobid: 18097052
+

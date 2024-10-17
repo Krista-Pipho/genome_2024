@@ -1,0 +1,11 @@
+../analysis/snake/bc2011.bp.p_ctg.gfa
+../logs/bc2011.log
+../results/bc2011.linear_plot.png
+../results/allAnnotation_bc2011.gff
+../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
+../analysis/geneAnnotation_bc2011.gff
+../analysis/noncodingAnnotation_bc2011.gff
+../results/bc2011.bp.p_ctg.masked.fasta
+../analysis/snake/bc2011.bp.p_ctg.gfa
+../results/bc2011.bp.p_ctg.masked.fasta

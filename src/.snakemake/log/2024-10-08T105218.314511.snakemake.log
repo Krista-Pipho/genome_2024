@@ -1,0 +1,5 @@
+Building DAG of jobs...
+MissingInputException in rule targets in file /work/alh166/genome_2024/src/Snakefile, line 2:
+Missing input files for rule targets:
+    affected files:
+        ../analysis/bc2011.bp_ctg.gfa

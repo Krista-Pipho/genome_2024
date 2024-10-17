@@ -1,0 +1,7 @@
+Building DAG of jobs...
+MissingInputException in rule fasta_qc in file /work/alh166/genome_2024/src/Snakefile, line 25:
+Missing input files for rule fasta_qc:
+    output: ../results/bc2011.linear_plot.png
+    wildcards: sample=bc2011
+    affected files:
+        ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
