@@ -1,0 +1,112 @@
+```{r}
+library(tidyverse)
+```
+
+```{r}
+#| label: read-data
+#ERR5466839 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466839.bedgraph", sep="\t", header=FALSE)
+
+ERR5466841 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466841.bedgraph", sep="\t", header=FALSE)
+ERR5466842 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466842.bedgraph", sep="\t", header=FALSE)
+ERR5466843 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466843.bedgraph", sep="\t", header=FALSE)
+ERR5466844 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466844.bedgraph", sep="\t", header=FALSE)
+ERR5466840 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466840.bedgraph", sep="\t", header=FALSE)
+ERR5466848 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466848.bedgraph", sep="\t", header=FALSE)
+ERR5466849 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466849.bedgraph", sep="\t", header=FALSE)
+ERR5466846 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466846.bedgraph", sep="\t", header=FALSE)
+ERR5466847 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466847.bedgraph", sep="\t", header=FALSE)
+ERR5466850 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466850.bedgraph", sep="\t", header=FALSE)
+ERR5466845 <- read.csv("C:/Users/danie/OneDrive/Documents/Wray_Lab/gynandromorph_2024/ERR5466845.bedgraph", sep="\t", header=FALSE)
+```
+
+```{r}
+#| label: select-position
+Start <- 1400000
+End <- 1410000
+
+ERR5466841 <- ERR5466841 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466841")
+ERR5466842 <- ERR5466842 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466842")
+ERR5466843 <- ERR5466843 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466843")
+ERR5466844 <- ERR5466844 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466844")
+ERR5466840 <- ERR5466840 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466840")
+ERR5466848 <- ERR5466848 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466848")
+ERR5466849 <- ERR5466849 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466849")
+ERR5466846 <- ERR5466846 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466846")
+ERR5466847 <- ERR5466847 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466847")
+ERR5466850 <- ERR5466850 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466850")
+ERR5466845 <- ERR5466845 |> filter(grepl(Chr,V1)) |> filter(V2 > Start) |> filter(V2 < End) |> mutate(sample = "ERR5466845")
+```
+
+```{r}
+melanic_hindwing <- bind_rows(ERR5466842, ERR5466843, ERR5466844, ERR5466846, ERR5466847, ERR5466845)
+yb_hindwing <- bind_rows(ERR5466840, ERR5466848, ERR5466849, ERR5466841, ERR5466850)
+
+view(yb_hindwing)
+```
+
+```{r, fig.height = 3, fig.width = 12}
+melanic_hindwing |>
+  group_by(V2) |>
+  summarize(avg_V4 = mean(V4)) |>
+  ggplot(aes(x = V2, y = avg_V4)) + 
+  geom_line() +
+  geom_smooth() +
+  geom_area(fill = "black") +
+  labs(
+    x = "Scaffold Position (bp)", 
+    y = "Unknown") + 
+  theme_minimal()
+
+
+yb_hindwing |>
+  group_by(V2) |>
+  summarize(avg_V4 = mean(V4)) |>
+  ggplot(aes(x = V2, y = avg_V4)) + 
+  geom_line() +
+  geom_area(fill = "black") +
+  labs(
+    x = "Scaffold Position (bp)", 
+    y = "Unknown") + 
+  theme_minimal() 
+```
+
+
+```{r, fig.height = 3, fig.width = 12}
+yb_hindwing |>
+  ggplot(aes(x = V2, y = V4)) + 
+  geom_line() +
+  labs(
+    x = "Scaffold Position (bp)", 
+    y = "Unknown") + 
+  theme_minimal() 
+```
+
+
+```{r, fig.height = 3, fig.width = 12}
+#| label: melanic-hindwing-morphs 
+
+plot=ggplot(ERR5466842, aes(x = V2, y = V4)) +
+  geom_line() +
+  geom_line(data=ERR5466843)+
+  geom_line(data=ERR5466844)+
+  geom_line(data=ERR5466846)+
+  geom_line(data=ERR5466847)+
+  geom_line(data=ERR5466845)+
+  theme_minimal()
+
+plot
+```
+
+```{r, fig.height = 3, fig.width = 12}
+#| label: yellow bar-hindwing-morphs 
+
+plot=ggplot(ERR5466840, aes(x = V2, y = V4)) +
+  geom_line() +
+  geom_line(data=ERR5466848)+
+  geom_line(data=ERR5466849)+
+  geom_line(data=ERR5466841)+
+  geom_line(data=ERR5466850)+
+  theme_minimal()
+
+plot
+```
