@@ -5,7 +5,7 @@ Provided resources: mem_mb=50000, mem_mib=47684
 Select jobs to execute...
 Execute 1 jobs...
 
-[Thu Oct 17 11:23:08 2024]
+[Thu Oct 24 10:56:18 2024]
 rule assembly:
     input: ../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
     output: ../analysis/snake/bc2011.bp.p_ctg.gfa, ../logs/bc2011.log
@@ -22,7 +22,7 @@ Provided resources: mem_mb=50000, mem_mib=47684, disk_mb=16779, disk_mib=16002
 Select jobs to execute...
 Execute 1 jobs...
 
-[Thu Oct 17 11:23:09 2024]
+[Thu Oct 24 10:56:23 2024]
 localrule assembly:
     input: ../raw_data/reads/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa
     output: ../analysis/snake/bc2011.bp.p_ctg.gfa, ../logs/bc2011.log
@@ -32,6 +32,5 @@ localrule assembly:
     resources: mem_mb=50000, mem_mib=47684, disk_mb=16779, disk_mib=16002, tmpdir=/tmp, runtime=360
 
 srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
-slurmstepd: error: *** STEP 18097051.0 ON dcc-core-38 CANCELLED AT 2024-10-17T11:43:52 ***
-slurmstepd: error: *** JOB 18097051 ON dcc-core-38 CANCELLED AT 2024-10-17T11:43:52 ***
-Will exit after finishing currently running jobs (scheduler).
+slurmstepd: error: *** STEP 18336518.0 ON dcc-core-36 CANCELLED AT 2024-10-24T11:05:32 ***
+slurmstepd: error: *** JOB 18336518 ON dcc-core-36 CANCELLED AT 2024-10-24T11:05:32 ***
