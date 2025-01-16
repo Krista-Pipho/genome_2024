@@ -1,7 +1,0 @@
-Building DAG of jobs...
-MissingInputException in rule assembly in file /work/alh166/genome_2024/src/Snakefile, line 10:
-Missing input files for rule assembly:
-    output: ../analysis/snake/bc2011.bp.p_ctg.gfa, ../logs/bc2011.log
-    wildcards: sample=bc2011
-    affected files:
-        ../../../kp275/genome_paper/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa

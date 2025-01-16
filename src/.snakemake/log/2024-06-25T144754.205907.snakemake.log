@@ -1,3 +1,0 @@
-Building DAG of jobs...
-MissingRuleException:
-No rule to produce ../results/m84165_231212_214911_s4.hifi_reads.bc2011.bam.fa.bp.p_utg.gfa (if you use input functions make sure that they don't raise unexpected exceptions).
