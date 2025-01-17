@@ -36,9 +36,8 @@ rule assembly:
 	shell:
 		"""
 		hifiasm -t32 -o {wildcards.sample} {input.hifi_reads} 2> {wildcards.sample}.log
-		awk '/^S/{print ">"$2;print $3}' {wildcards.sample}.bp.p_ctg.gfa > {wildcards.sample}.p_ctg.fa  # get primary contigs in FASTA
+		awk "/^S/{{print ">"$2}};{{print $3}}" {wildcards.sample}.bp.p_ctg.gfa > {wildcards.sample}.p_ctg.fa  # get primary contigs in FASTA
 		"""
-
 rule index:
 	input:
 		assembly="{sample}.p_ctg.fa"
@@ -67,7 +66,7 @@ rule telo:
 		"tidk_{sample}.svg"
 	shell:
 		"""
-		bioawk -c fastx '{ if(length($seq) > 50000) { print ">"$name; print $seq }}' {input.assembly} > {wildcards.sample}_filtered.fa # Filters out small contigs
+		bioawk -c fastx "if(length($seq) > 50000)  {{print ">"$name}}; {{print $seq }}" {input.assembly} > {wildcards.sample}_filtered.fa # Filters out small contigs
 		tidk find --log -c Lepidoptera -o tidk_{wildcards.sample} -d tidk_{wildcards.sample} {wildcards.sample}_filtered.fa
 		tidk plot -t tidk_{wildcards.sample}/tidk_{wildcards.sample}_telomeric_repeat_windows.tsv -o tidk_{wildcards.sample}
 		"""
