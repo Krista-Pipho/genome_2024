@@ -12,7 +12,7 @@ This Snakemake pipeline is designed for processing PacBio HiFi sequencing data, 
 3. Go to your Github profile and select "SSH Keys" from left sidebar 
 4. "Add SSH Key" and enter the id_rsa.pub file contents into the "Key" field, and "Add Key"
 
-
+<br>
 ## Getting Started
 ### Downloading Pipeline
 1. The pipeline is accessible in this [Github repo](https://github.com/Krista-Pipho/genome_2024). Everything else you will need is included in the cloned folder.
@@ -23,7 +23,7 @@ This Snakemake pipeline is designed for processing PacBio HiFi sequencing data, 
     a. The pipeline DAG image (and also any other files) can be pulled from shell to your local computer via `r scp netid321@dcc-login.oit.duke.edu:/path/to/genome_2024/src/dag.png /local/path/to/save` on local terminal
 4. If no errors, run `r sbatch launch.sh` 
 5. Open the corresponding slurm log to monitor the live process output
-**Rule Explanations
+**Rule Explanations**
 6. 
 
 # Resources
