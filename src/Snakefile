@@ -1,4 +1,4 @@
-all_samples=["hed"]
+all_samples=["SRR13577847"]
 busco_lineage="lepidoptera"
 tidk_lineage="Lepidoptera"
 
@@ -17,7 +17,7 @@ rule targets:
         
 rule data_qc:
 	input:
-		hifi_reads="{sample}.bam.fa"
+		hifi_reads="{sample}.fa"
 	output:
 		"{sample}_linear_plot.png"   
 	shell:
@@ -30,7 +30,7 @@ rule data_qc:
 
 rule assembly:
 	input:
-		hifi_reads="{sample}.bam.fa"
+		hifi_reads="{sample}.fa"
 	output:
 		"{sample}.p_ctg.fa",
 	shell:

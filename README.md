@@ -18,7 +18,7 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 ## Requirements
 * Any version of conda ie [miniconda](https://docs.anaconda.com/miniconda/install/) or bioconda
 
-### Security: SSH key generation and DCC -> Github connection
+### Duke Security: SSH key generation and DCC -> Github connection
   
 1. Login to DCC using `$ ssh netid321@dcc-login.oit.duke.edu`
 2. Generate SSH key using `$ ssh-keygen` and select default file location
@@ -27,17 +27,21 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 <br>
 
 ## Getting Started
-### Downloading Pipeline
-1. The pipeline is accessible in this [Github repo](https://github.com/Krista-Pipho/genome_2024). Everything you will need is included in this folder.
-2. To clone the repo, run `git clone https://github.com/Krista-Pipho/genome_2024.git` in the desired parent folder and once created, enter the repo via `cd genome_2024`
-2. To create the environment the pipeline will utilize, within `/genome_2024/src`, run `$ conda create --name myenv --file assembly_pipeline_environment.txt`. Change `myenv` to a functional name for this environment, which includes all the packages and other software tools that the pipeline will utilize, so *no* other software downloads are required.
-3. The environment will take a few minutes to install so once finished, actviate the environment using `conda activate myenv`, where myenv is the name you gave the environment.
+```
+# install pipeline
+git clone https://github.com/Krista-Pipho/genome_2024.git
+cd genome_2024/src
+conda create --name myenv --file assembly_pipeline_environment.txt # change myenv to a functional name
+conda activate myenv
+# this environment includes all the packages and other software tools, so no other software downloads are required
+```
+
 <br> 
 
 **Simple Use Case**
 <br> 
 
-Using the sample yeast genome given found in `/genome_2024/data/yeast.fasta`, we will go through a sample run of the pipeline and its rules (processes).
+Using the sample yeast genome given found in `/genome_2024/raw_data/yeast.fasta`, we will go through a sample run of the pipeline and its rules (processes).
 
 3. Run `$ snakemake --dry-run` to test if workflow is properly installed and estimate the amount of needed resources. This `--dry-run` flag evaluates the rules without running the actual commands, and also created a DAG image (`/genome_2024/src/rulegraph.png`) that shows the workflow of all rules.
 **INSERT IMG**
@@ -52,7 +56,7 @@ Using the sample yeast genome given found in `/genome_2024/data/yeast.fasta`, we
 **Rule Explanations**
 <br> 
 
-6. 
+6. 6 min to run the assembly rule for yeast SRR
 
 # Resources
 
