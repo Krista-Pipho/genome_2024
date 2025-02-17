@@ -24,7 +24,7 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 ## Getting Started
 ```
 # install pipeline
-git clone https://github.com/Krista-Pipho/genome_2024.git
+clone git@github.com:Krista-Pipho/genome_2024.git
 cd genome_2024/src
 conda create --name myenv --file assembly_pipeline_environment.txt # change myenv to a functional name
 conda activate myenv
