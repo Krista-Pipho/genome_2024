@@ -1,5 +1,5 @@
-analysis/
-results/
+analysis/*
+results/*
 busco*
 *.fa
 *.gfa
