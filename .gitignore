@@ -4,4 +4,8 @@ busco*
 *.fa
 *.gfa
 slurm*
-
+.snakemake
+.DS_Store
+.RData
+.Rhistory
+.gitmodules
