@@ -18,6 +18,7 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 
 ## Requirements
 * Any version of conda ie [miniconda](https://docs.anaconda.com/miniconda/install/) or bioconda
+* DCC users should follow the instructions here: https://oit-rc.pages.oit.duke.edu/rcsupportdocs/software/user/
 
 <br>
 
@@ -25,27 +26,34 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 ```
 # install pipeline
 clone git@github.com:Krista-Pipho/genome_2024.git
-cd genome_2024/src
-conda create --name myenv --file assembly_pipeline_environment.txt # change myenv to a functional name
-conda activate myenv
+cd genome_2024
+conda create --name assembly_env --file environment.txt 
+conda activate assembly_env
 # this environment includes all the packages and other software tools, so no other software downloads are required
 ```
 
+Creating the environment can take a considerable amount of time, expect 10-60 minutes.
+
 <br> 
 
-**Simple Use Case**
+**Testing the Pipeline**
 <br> 
 
-Using the sample yeast HIFI reads found in `/genome_2024/raw_data/yeast.fasta`, we will go through a sample run of the pipeline and its rules (processes).
+Using example yeast HIFI reads we will go through a test run of the pipeline and its rules (processes).
 
-3. Run `$ snakemake --dry-run` to test if workflow is properly installed and estimate the amount of needed resources. This `--dry-run` flag evaluates the rules without running the actual commands, and also created a DAG image (`/genome_2024/src/rulegraph.png`) that shows the workflow of all rules.
+1. Download the example data from SRA using this command
+```
+fasterq-dump SRR13577847
+mv SRR13577847.fastq SRR13577847.fa
+```
+2. Run `$ snakemake --dry-run` to test if workflow is properly installed and estimate the amount of needed resources. This `--dry-run` flag evaluates the rules without running the actual commands, and also created a DAG image (`/genome_2024/src/rulegraph.png`) that shows the workflow of all rules.
 **INSERT IMG**
 
     a. If on a cluster, the pipeline DAG image (and also any other files) can be viewed by pulling the file from shell to your local computer via `$ scp netid321@dcc-login.oit.duke.edu:/path/to/genome_2024/src/dag.png /local/path/to/save` on local terminal
-4. If no errors, run `$ sbatch launch.sh` while inside the `src` folder. This file is a wrapper to run the Snakemake commands, found in the Snakefile within the src folder.
+5. If no errors, run `$ sbatch launch.sh` while inside the `src` folder. This file is a wrapper to run the Snakemake commands, found in the Snakefile within the src folder.
 
     a. If on SLURM, run `squeue -u userID` to view the job process.
-5. Open the corresponding slurm log to monitor the live process output
+6. Open the corresponding slurm log to monitor the live process output
 <br> 
 
 **Rule Explanations**
