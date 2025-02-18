@@ -1,0 +1,84 @@
+host: dcc-caperlab-01
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 16
+Rules claiming more threads will be scaled down.
+Job stats:
+job         count
+--------  -------
+assembly        1
+busco           1
+index           1
+quast           1
+targets         1
+telo            1
+total           6
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Mon Feb 17 21:48:59 2025]
+localrule assembly:
+    input: SRR13577847.fa
+    output: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    jobid: 2
+    reason: Missing output files: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    wildcards: sample=SRR13577847
+    resources: tmpdir=/tmp
+
+[Mon Feb 17 21:56:45 2025]
+Finished job 2.
+1 of 6 steps (17%) done
+Select jobs to execute...
+Execute 4 jobs...
+
+[Mon Feb 17 21:56:45 2025]
+localrule quast:
+    input: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    output: analysis/SRR13577847/SRR13577847_quast_report.txt
+    jobid: 6
+    reason: Missing output files: analysis/SRR13577847/SRR13577847_quast_report.txt; Input files updated by another job: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    wildcards: sample=SRR13577847
+    resources: tmpdir=/tmp
+
+
+[Mon Feb 17 21:56:45 2025]
+localrule telo:
+    input: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    output: analysis/SRR13577847/tidk_SRR13577847.svg
+    jobid: 5
+    reason: Missing output files: analysis/SRR13577847/tidk_SRR13577847.svg; Input files updated by another job: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    wildcards: sample=SRR13577847
+    resources: tmpdir=/tmp
+
+
+[Mon Feb 17 21:56:45 2025]
+localrule busco:
+    input: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    output: analysis/SRR13577847/SRR13577847_busco_short_summary.txt
+    jobid: 4
+    reason: Missing output files: analysis/SRR13577847/SRR13577847_busco_short_summary.txt; Input files updated by another job: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    wildcards: sample=SRR13577847
+    resources: tmpdir=/tmp
+
+
+[Mon Feb 17 21:56:46 2025]
+localrule index:
+    input: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    output: analysis/SRR13577847/SRR13577847.p_ctg.fa.fai
+    jobid: 3
+    reason: Missing output files: analysis/SRR13577847/SRR13577847.p_ctg.fa.fai; Input files updated by another job: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    wildcards: sample=SRR13577847
+    resources: tmpdir=/tmp
+
+[Mon Feb 17 21:56:46 2025]
+Finished job 3.
+2 of 6 steps (33%) done
+Waiting at most 5 seconds for missing files.
+MissingOutputException in rule telo in file /work/kp275/genome_2024/Snakefile, line 61:
+Job 5  completed successfully, but some output files are missing. Missing files after 5 seconds. This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait:
+analysis/SRR13577847/tidk_SRR13577847.svg (missing locally, parent dir contents: SRR13577847.ovlp.source.bin, SRR13577847.histo, SRR13577847.bp.r_utg.gfa, SRR13577847.p_ctg.fa, genomescope_SRR13577847, SRR13577847.bp.p_utg.noseq.gfa, SRR13577847.ovlp.reverse.bin, SRR13577847.bp.hap2.p_ctg.gfa, SRR13577847.bp.p_ctg.noseq.gfa, SRR13577847.bp.hap1.p_ctg.lowQ.bed, SRR13577847.bp.p_ctg.lowQ.bed, SRR13577847.ec.bin, SRR13577847.bp.p_utg.lowQ.bed, SRR13577847.bp.hap2.p_ctg.noseq.gfa, SRR13577847.log, SRR13577847.bp.r_utg.noseq.gfa, SRR13577847.bp.hap1.p_ctg.noseq.gfa, SRR13577847.bp.p_ctg.gfa, SRR13577847.jf, SRR13577847.bp.hap1.p_ctg.gfa, SRR13577847.p_ctg.fa.fai, SRR13577847.bp.hap2.p_ctg.lowQ.bed, SRR13577847.bp.r_utg.lowQ.bed, SRR13577847.bp.p_utg.gfa)
+Waiting at most 5 seconds for missing files.
+MissingOutputException in rule quast in file /work/kp275/genome_2024/Snakefile, line 71:
+Job 6  completed successfully, but some output files are missing. Missing files after 5 seconds. This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait:
+analysis/SRR13577847/SRR13577847_quast_report.txt (missing locally, parent dir contents: SRR13577847.ovlp.source.bin, SRR13577847.histo, SRR13577847.bp.r_utg.gfa, SRR13577847.p_ctg.fa, genomescope_SRR13577847, SRR13577847.bp.p_utg.noseq.gfa, SRR13577847.ovlp.reverse.bin, SRR13577847.bp.hap2.p_ctg.gfa, SRR13577847.bp.p_ctg.noseq.gfa, SRR13577847.bp.hap1.p_ctg.lowQ.bed, SRR13577847.bp.p_ctg.lowQ.bed, SRR13577847.ec.bin, SRR13577847.bp.p_utg.lowQ.bed, SRR13577847.bp.hap2.p_ctg.noseq.gfa, SRR13577847.log, SRR13577847.bp.r_utg.noseq.gfa, SRR13577847.bp.hap1.p_ctg.noseq.gfa, SRR13577847.bp.p_ctg.gfa, SRR13577847.jf, SRR13577847.bp.hap1.p_ctg.gfa, SRR13577847.p_ctg.fa.fai, SRR13577847.bp.hap2.p_ctg.lowQ.bed, SRR13577847.bp.r_utg.lowQ.bed, SRR13577847.bp.p_utg.gfa)

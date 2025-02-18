@@ -1,0 +1,107 @@
+host: dcc-caperlab-01
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 16
+Rules claiming more threads will be scaled down.
+Job stats:
+job         count
+--------  -------
+assembly        1
+busco           1
+data_qc         1
+index           1
+quast           1
+targets         1
+telo            1
+total           7
+
+Select jobs to execute...
+Execute 2 jobs...
+
+[Mon Feb 17 23:08:20 2025]
+localrule assembly:
+    input: bc2036.fa
+    output: analysis/bc2036/bc2036.p_ctg.fa
+    jobid: 2
+    reason: Missing output files: analysis/bc2036/bc2036.p_ctg.fa
+    wildcards: sample=bc2036
+    resources: tmpdir=/tmp
+
+
+[Mon Feb 17 23:08:20 2025]
+localrule data_qc:
+    input: bc2036.fa
+    output: results/bc2036/bc2036_genomescope.png
+    jobid: 1
+    reason: Missing output files: results/bc2036/bc2036_genomescope.png
+    wildcards: sample=bc2036
+    resources: tmpdir=/tmp
+
+[Mon Feb 17 23:12:45 2025]
+Finished job 1.
+1 of 7 steps (14%) done
+[Mon Feb 17 23:31:05 2025]
+Finished job 2.
+2 of 7 steps (29%) done
+Select jobs to execute...
+Execute 4 jobs...
+
+[Mon Feb 17 23:31:05 2025]
+localrule quast:
+    input: analysis/bc2036/bc2036.p_ctg.fa
+    output: analysis/bc2036/bc2036_quast_report.txt
+    jobid: 6
+    reason: Missing output files: analysis/bc2036/bc2036_quast_report.txt; Input files updated by another job: analysis/bc2036/bc2036.p_ctg.fa
+    wildcards: sample=bc2036
+    resources: tmpdir=/tmp
+
+
+[Mon Feb 17 23:31:05 2025]
+localrule telo:
+    input: analysis/bc2036/bc2036.p_ctg.fa
+    output: analysis/bc2036/tidk_bc2036.svg
+    jobid: 5
+    reason: Missing output files: analysis/bc2036/tidk_bc2036.svg; Input files updated by another job: analysis/bc2036/bc2036.p_ctg.fa
+    wildcards: sample=bc2036
+    resources: tmpdir=/tmp
+
+
+[Mon Feb 17 23:31:05 2025]
+localrule busco:
+    input: analysis/bc2036/bc2036.p_ctg.fa
+    output: analysis/bc2036/bc2036_busco_short_summary.txt
+    jobid: 4
+    reason: Missing output files: analysis/bc2036/bc2036_busco_short_summary.txt; Input files updated by another job: analysis/bc2036/bc2036.p_ctg.fa
+    wildcards: sample=bc2036
+    resources: tmpdir=/tmp
+
+
+[Mon Feb 17 23:31:05 2025]
+localrule index:
+    input: analysis/bc2036/bc2036.p_ctg.fa
+    output: analysis/bc2036/bc2036.p_ctg.fa.fai
+    jobid: 3
+    reason: Missing output files: analysis/bc2036/bc2036.p_ctg.fa.fai; Input files updated by another job: analysis/bc2036/bc2036.p_ctg.fa
+    wildcards: sample=bc2036
+    resources: tmpdir=/tmp
+
+[Mon Feb 17 23:31:07 2025]
+Finished job 3.
+3 of 7 steps (43%) done
+Waiting at most 5 seconds for missing files.
+MissingOutputException in rule telo in file /work/kp275/genome_2024/Snakefile, line 61:
+Job 5  completed successfully, but some output files are missing. Missing files after 5 seconds. This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait:
+analysis/bc2036/tidk_bc2036.svg (missing locally, parent dir contents: genomescope_bc2036, tidk_bc2036.log, bc2036.bp.hap1.p_ctg.noseq.gfa, bc2036.bp.hap1.p_ctg.lowQ.bed, bc2036.ovlp.source.bin, bc2036.bp.hap2.p_ctg.lowQ.bed, bc2036.bp.p_utg.noseq.gfa, bc2036.bp.p_utg.lowQ.bed, bc2036.bp.r_utg.gfa, bc2036.histo, bc2036.jf, bc2036.bp.p_utg.gfa, bc2036.bp.hap2.p_ctg.gfa, bc2036.p_ctg.fa.fai, bc2036.ovlp.reverse.bin, bc2036.bp.hap2.p_ctg.noseq.gfa, bc2036.bp.p_ctg.gfa, bc2036.p_ctg.fa, bc2036.bp.hap1.p_ctg.gfa, bc2036_filtered.fa, bc2036.bp.r_utg.noseq.gfa, quast_bc2036, bc2036.bp.p_ctg.lowQ.bed, bc2036.log, bc2036.ec.bin, bc2036.bp.r_utg.lowQ.bed, bc2036.bp.p_ctg.noseq.gfa, tidk_bc2036_telomeric_repeat_windows.tsv)
+Waiting at most 5 seconds for missing files.
+MissingOutputException in rule quast in file /work/kp275/genome_2024/Snakefile, line 71:
+Job 6  completed successfully, but some output files are missing. Missing files after 5 seconds. This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait:
+analysis/bc2036/bc2036_quast_report.txt (missing locally, parent dir contents: genomescope_bc2036, tidk_bc2036.log, bc2036.bp.hap1.p_ctg.noseq.gfa, busco_bc2036, bc2036.bp.hap1.p_ctg.lowQ.bed, bc2036.ovlp.source.bin, bc2036.bp.hap2.p_ctg.lowQ.bed, bc2036.bp.p_utg.noseq.gfa, bc2036.bp.p_utg.lowQ.bed, bc2036.bp.r_utg.gfa, bc2036.histo, bc2036.jf, bc2036.bp.p_utg.gfa, bc2036.bp.hap2.p_ctg.gfa, bc2036.p_ctg.fa.fai, bc2036.ovlp.reverse.bin, bc2036.bp.hap2.p_ctg.noseq.gfa, bc2036.bp.p_ctg.gfa, bc2036.p_ctg.fa, bc2036.bp.hap1.p_ctg.gfa, bc2036_filtered.fa, bc2036.bp.r_utg.noseq.gfa, quast_bc2036, bc2036.bp.p_ctg.lowQ.bed, bc2036.log, bc2036.ec.bin, bc2036.bp.r_utg.lowQ.bed, bc2036.bp.p_ctg.noseq.gfa, tidk_bc2036_telomeric_repeat_windows.tsv)
+Waiting at most 5 seconds for missing files.
+MissingOutputException in rule busco in file /work/kp275/genome_2024/Snakefile, line 49:
+Job 4  completed successfully, but some output files are missing. Missing files after 5 seconds. This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait:
+analysis/bc2036/bc2036_busco_short_summary.txt (missing locally, parent dir contents: genomescope_bc2036, tidk_bc2036.log, bc2036.bp.hap1.p_ctg.noseq.gfa, busco_bc2036, bc2036.bp.hap1.p_ctg.lowQ.bed, bc2036.ovlp.source.bin, bc2036.bp.hap2.p_ctg.lowQ.bed, bc2036.bp.p_utg.noseq.gfa, bc2036.bp.p_utg.lowQ.bed, bc2036.bp.r_utg.gfa, bc2036.histo, bc2036.jf, bc2036.bp.p_utg.gfa, bc2036.bp.hap2.p_ctg.gfa, bc2036.p_ctg.fa.fai, bc2036.ovlp.reverse.bin, bc2036.bp.hap2.p_ctg.noseq.gfa, bc2036.bp.p_ctg.gfa, bc2036.p_ctg.fa, bc2036.bp.hap1.p_ctg.gfa, bc2036_filtered.fa, bc2036.bp.r_utg.noseq.gfa, quast_bc2036, bc2036.bp.p_ctg.lowQ.bed, bc2036.log, bc2036.ec.bin, bc2036.bp.r_utg.lowQ.bed, bc2036.bp.p_ctg.noseq.gfa, tidk_bc2036_telomeric_repeat_windows.tsv)
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2025-02-17T230817.703285.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

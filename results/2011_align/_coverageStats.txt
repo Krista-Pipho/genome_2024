@@ -1,3 +1,0 @@
-usage: plotCoverage -b sample1.bam sample2.bam -o coverage.png 
-help: plotCoverage -h / plotCoverage --help
-plotCoverage: error: argument --region/-r: expected one argument

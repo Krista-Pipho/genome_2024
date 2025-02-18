@@ -1,0 +1,42 @@
+host: dcc-caperlab-01
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 16
+Rules claiming more threads will be scaled down.
+Job stats:
+job         count
+--------  -------
+assembly        1
+busco           1
+data_qc         1
+index           1
+quast           1
+targets         1
+telo            1
+total           7
+
+Select jobs to execute...
+Execute 2 jobs...
+
+[Mon Feb 17 21:41:23 2025]
+localrule assembly:
+    input: SRR13577847.fa
+    output: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    jobid: 2
+    reason: Missing output files: analysis/SRR13577847/SRR13577847.p_ctg.fa
+    wildcards: sample=SRR13577847
+    resources: tmpdir=/tmp
+
+
+[Mon Feb 17 21:41:23 2025]
+localrule data_qc:
+    input: SRR13577847.fa
+    output: results/SRR13577847/SRR13577847_genomescope.png
+    jobid: 1
+    reason: Missing output files: results/SRR13577847/SRR13577847_genomescope.png
+    wildcards: sample=SRR13577847
+    resources: tmpdir=/tmp
+
+[Mon Feb 17 21:42:22 2025]
+Finished job 1.
+1 of 7 steps (14%) done

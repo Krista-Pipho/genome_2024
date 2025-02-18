@@ -1,9 +1,6 @@
 [submodule "bin/bin/hifiasm"]
 	path = bin/bin/hifiasm
 	url = https://github.com/chhylp123/hifiasm.git
-[submodule "bin/quast"]
-	path = bin/quast
-	url = git@github.com:ablab/quast.git
 [submodule "bin/Jellyfish"]
 	path = bin/Jellyfish
 	url = https://github.com/gmarcais/Jellyfish
