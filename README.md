@@ -1,5 +1,5 @@
 # Genome 2024
-### Authors: Krista Pipho, Avi Heyman, Angelina Huang, Daniel Levin, and Shriya Minocha
+### Authors: Krista Pipho, Angelina Huang, Avi Heyman, Daniel Levin, and Shriya Minocha
 
 # Description
 This Snakemake pipeline is designed for processing PacBio HiFi sequencing data into de-novo genome assemblies. The provided code includes data quality assessment, genome assembly, assembly quality assessment, and gene annotation. Besides de-novo genome assembly, it can evaluate existing genome assemblies and generate comparative statistics. An R markdown document has been provided for visualization of pipeline outputs. The final result is a fully processed and annotated genome, suitable for downstream applications such as comparative genomics, evolutionary studies, and functional analyses. 
