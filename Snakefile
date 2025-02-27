@@ -8,7 +8,7 @@ rule targets:
 		expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples), #fasta_qc
 		expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
 		expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
-		expand("analysis/{sample}/busco_{sample}/", sample=all_samples), #busco
+		expand("analysis/{sample}/busco_{sample}/full_table.tsv", sample=all_samples), #busco
 #		expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples), #telo
 		expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), #results 
@@ -57,12 +57,17 @@ rule busco:
 	input:
 		assembly="analysis/{sample}/{sample}.p_ctg.fa"
 	output:
-		summary="analysis/{sample}/busco_{sample}/",
+		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
+		full="analysis/{sample}/busco_{sample}/full_table.tsv"
 	shell:
 		"""
 		# Use singularity docker to run BUSCO using the specific lineage entered at the top of this file
 		# BUSCO generates both a summary with percent of genes found, and a full output of each gene location
 		singularity exec docker://ezlabgva/busco:v5.4.7_cv1 busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
+		
+		# Moves the BUSCO output to a location that snakemake can understand
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run*/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run*/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
 		"""
 
 rule telo:
