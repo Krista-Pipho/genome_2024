@@ -1,11 +1,11 @@
-all_samples=["SRR13577847"]
+all_samples=["danplex"]
 cores="10" # Number of cores, where required to specify 
-busco_lineage="saccharomycetes" # Find here https://busco.ezlab.org/list_of_lineages.html
+busco_lineage="lepidoptera" # Find here https://busco.ezlab.org/list_of_lineages.html
 tidk_lineage="Lepidoptera" # Find here https://github.com/tolkit/a-telomeric-repeat-database
 
 rule targets:
 	input:
-		expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples), #fasta_qc
+#		expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples), #fasta_qc
 		expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
 		expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
 		expand("analysis/{sample}/busco_{sample}/full_table.tsv", sample=all_samples), #busco
@@ -21,7 +21,8 @@ rule data_qc:
 	input:
 		hifi_reads="{sample}.fa"
 	output:
-		genomescope="analysis/{sample}/genomescope_{sample}/linear_plot.png"
+		genomescope="analysis/{sample}/genomescope_{sample}/linear_plot.png",
+		genomescope_copy="results/{sample}/{sample}_genomescope.png" 
 	shell:
 		"""
 		# Make intermediate files for genomescope analysis using Jellyfish
@@ -30,7 +31,10 @@ rule data_qc:
 		jellyfish histo -t 10 analysis/{wildcards.sample}/{wildcards.sample}.jf > analysis/{wildcards.sample}/{wildcards.sample}.histo
 		
 		# Run genomescope
-		genomescope2 -i analysis/{wildcards.sample}/{wildcards.sample}.histo -o analysis/{wildcards.sample}/genomescope_{wildcards.sample} -k 20 #kmer_size
+		genomescope2 -i analysis/{wildcards.sample}/{wildcards.sample}.histo -o analysis/{wildcards.sample}/genomescope_{wildcards.sample} -k 20 #kmer_size	
+
+		# Copy genomescope output to the results folder
+		cp {output.genomescope} {output.genomescope_copy}
 		"""
 
 rule assembly:
@@ -57,6 +61,7 @@ rule busco:
 	input:
 		assembly="analysis/{sample}/{sample}.p_ctg.fa"
 	output:
+		busco_folder="analysis/{sample}/busco_{sample}/",
 		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
 		full="analysis/{sample}/busco_{sample}/full_table.tsv"
 	shell:
@@ -95,12 +100,10 @@ rule quast:
 rule clean_results:
 	input: 
 		index="analysis/{sample}/{sample}.p_ctg.fa.fai",
-		genomescope="analysis/{sample}/genomescope_{sample}/linear_plot.png",	
 		report="analysis/{sample}/quast_{sample}/report.txt",
-		summary="analysis/{sample}/busco_{sample}/",
+		busco_folder="analysis/{sample}/busco_{sample}/",
 
 	output:
-		genomescope_copy="results/{sample}/{sample}_genomescope.png",   
 		index_copy="results/{sample}/{sample}.fa.fai",
 		quast_report="results/{sample}/{sample}_quast_table.txt",
 		busco_summary="results/{sample}/{sample}_busco_table.txt",
@@ -108,15 +111,12 @@ rule clean_results:
 
 	shell:
 		"""
-		# Copy genomescope output to the results folder
-		cp {input.genomescope} {output.genomescope_copy}
-		
 		# Because the index has information about scaffold number and size this file is copied to the results folder 
 		cp {input.index} {output.index_copy}
 		
 		# Modify BUSCO outputs to make them compatible with the downstream visualization tools provided. Store in results
 		# Modify QUAST outputs to make them compatible with the downstream visualization tools provided. Store in results
-		bash summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.summary} {output.busco_summary} {output.busco_full}
+		bash summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.busco_folder} {output.busco_summary} {output.busco_full}
 		"""
 rule masking:
 	input: 
