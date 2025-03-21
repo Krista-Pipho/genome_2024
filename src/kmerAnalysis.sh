@@ -19,8 +19,8 @@ kmer=20
 output_name=$1
 raw_data=$2
 
-#../bin/jellyfish count -C -m $kmer -s 1000000000 -t 10 ${raw_data} -o ../analysis/${output_name}.jf
-#../bin/jellyfish histo -t 10 ../analysis/${output_name}.jf > ../analysis/${output_name}.histo
+../bin/jellyfish count -C -m $kmer -s 1000000000 -t 10 ${raw_data} -o ../analysis/${output_name}.jf
+../bin/jellyfish histo -t 10 ../analysis/${output_name}.jf > ../analysis/${output_name}.histo
 
 module load R/4.4.0
 conda install r-minpack.lm
