@@ -23,22 +23,39 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 <br>
 
 ## Getting Started
+
+### Step 1: Install the pipeline from github
+
 ```
-$ # install pipeline
 $ git clone https://github.com/Krista-Pipho/genome_2024.git
 $ cd genome_2024
-$ conda create --name myenv --file environment.txt # change myenv to a functional name
-$ conda activate myenv
-$ # this environment includes all the packages and other software tools, so no other software downloads are required
 ```
 
+### Step 2: Create a conda environment 
+
+By default the environment is called assembly_env. This includes all the packages and other software tools required to run the pipeline, so no other software downloads are required.   
+
+```
+$ conda create --name assembly_env --file environment.txt # you can change assembly_env to any name
+```
 Creating the environment can take a considerable amount of time, expect 10-60 minutes.
+
+
+
+
 
 <br> 
 
 **Testing the Pipeline**
 <br> 
 
+### Step 3: Activate the conda environment
+
+The environment must be activated every time the pipeline is used, not just for installation. 
+
+```
+$ conda activate assembly_env
+```
 Using example yeast HIFI reads we will go through a test run of the pipeline and its rules (processes).
 
 1. Download the example data from SRA of accession SRR13577847
