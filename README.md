@@ -12,9 +12,8 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 * **Completeness Assessment**: BUSCO analysis to evaluate genome completeness (TXT, TSV)
 * **Quality Evaluation**: QUAST report with key assembly metrics (TXT)
 * **Telomere Identification**: TIDK visualization of telomeric regions (SVG)
-* **Masked Assembly**: RepeatMasker masked genome (FASTA)
-* **Gene Annotations**: Coding genes (GFF) and noncoding RNA (GFF) annotations
-
+* **Masked Assembly**: RepeatMasker masked genome (FASTA) **COMING SOON**
+* **Gene Annotations**: Coding genes (GFF) and noncoding RNA (GFF) annotations **COMING SOON**
 
 ## Requirements
 * Any version of conda ie [miniconda](https://docs.anaconda.com/miniconda/install/) or bioconda
@@ -33,21 +32,25 @@ $ cd genome_2024
 
 ### Step 2: Create a conda environment 
 
-By default the environment is called assembly_env. This includes all the packages and other software tools required to run the pipeline, so no other software downloads are required.   
+By default the environment is called assembly_env. This includes all the packages and software required to run the pipeline. No other software downloads are required.   
 
 ```
-$ conda create --name assembly_env --file environment.txt # you can change assembly_env to any name
+$ conda create -y --name assembly_env --file environment.txt # you can change assembly_env to any name
 ```
-Creating the environment can take a considerable amount of time, expect 10-60 minutes.
+Creating the environment can take a considerable amount of time, expect 10-60 minutes. 
 
+done
+#
+# To activate this environment, use
+#
+#     $ conda activate assembly_env
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
 
+If you are on a cluster, you can make this go faster and avoid 'killed' errors by running this as a job. 
 
-
-
-<br> 
-
-**Testing the Pipeline**
-<br> 
 
 ### Step 3: Activate the conda environment
 
@@ -56,25 +59,25 @@ The environment must be activated every time the pipeline is used, not just for 
 ```
 $ conda activate assembly_env
 ```
-Using example yeast HIFI reads we will go through a test run of the pipeline and its rules (processes).
 
-1. Download the example data from SRA of accession SRR13577847
+### Step 4: Test the pipeline
+
+Here we provide a small test dataset to quickly test that your pipeline installation is functioning.  Please note that this pipeline was designed and optimized using data from heliconius butterflies, not yeast. 
+Using example yeast HIFI reads we will go through a test run of the pipeline and its parts.
+
+Download the example data from SRA accession SRR13577847
+
 ```
 $ fasterq-dump SRR13577847
 $ mv SRR13577847.fastq SRR13577847.fa
 ``` 
 
-2. Before running the pipeline, first test if workflow is properly installed and estimate the amount of needed resources. Run
+Before running the pipeline, test if workflow is working properly and estimate the amount of needed resources. 
 ```
 $ snakemake --dry-run
 ```
-This `--dry-run` flag evaluates the rules without running the actual commands, and also creates a DAG image (`/genome_2024/src/rulegraph.png`) that shows the workflow of all rules. Check if these match.
 
-    a. If on a cluster, the pipeline DAG image (and also any other files) can be viewed by pulling the file from shell to your local computer via `$ scp netid321@dcc-login.oit.duke.edu:/path/to/genome_2024/src/dag.png /local/path/to/save` on local terminal
-
-**INSERT IMG**
-
-3. Then run the pipeline with launch.sh, a file wrapper that contains the Snakemake commands (found within `/src/Snakefile`)  
+Run the pipeline with launch.sh, a file wrapper that contains the Snakemake commands (file name `Snakefile`)  
 If on a cluster, 
 ```
 $ sbatch launch.sh
