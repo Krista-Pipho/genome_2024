@@ -18,7 +18,7 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 
 ## Requirements
 * Any version of conda ie [miniconda](https://docs.anaconda.com/miniconda/install/) or bioconda
-* DCC users should follow the instructions here: https://oit-rc.pages.oit.duke.edu/rcsupportdocs/software/user/
+* DCC users should follow installation instructions here: https://oit-rc.pages.oit.duke.edu/rcsupportdocs/software/user/
 
 <br>
 
