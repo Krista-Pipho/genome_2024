@@ -84,7 +84,7 @@ If you are not using a cluster, execute the simple command below.
 $ snakemake 
 ```
 
-If you are using a cluster, use the provided slurm launch script. This script tells the cluster how many cores and how much CPU to assign to running the pipeline. You can change the resources used by editing the header of launch.sh. 
+If you are using a cluster, use the provided slurm launch script. This script tells the cluster how many cores and how much ram to assign to running the pipeline. You can change the resources used by editing the header of launch.sh. 
 
 ```
 $ sbatch launch.sh
@@ -113,7 +113,12 @@ Once the pipeline begins running, either open the slurm log or view the terminal
 
 
 ## Customizing the Pipeline
-editing snakefile, ediitng rules, and assembly+another one is outside in sep file
+
+The basic version of customizing the pipeline to work on your own data involves editing the top few lines of the 'Snakefile'. 
+
+Line one starts like this: all_samples=\["SRR13577847"\]
+
+editing snakefile, editing rules, and assembly+another one is outside in sep file
 link snakemake readme and how to 
 detailed on vim/nano edits in the files
 
