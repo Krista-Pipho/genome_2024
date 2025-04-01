@@ -121,13 +121,32 @@ The basic version of customizing the pipeline to work on your own data involves 
 | all_samples=\["SRR13577847"\] | The brackets contain a list of 'samples' to analyze. Put one or more sample names in quotes and seperated by commas. Do not include file extensions like .fa |
 | cores="10" | Specifies a number of cores to use in processes where an explicet number must be given. On DCC values above 64 can cause errors. On your local machiene avoid using more that 75% of the avaliable cores. |
 | busco_lineage="lepidoptera" | This must be changed to match your data. Find the avaliable options here https://busco.ezlab.org/list_of_lineages.html | 
-| tidk_lineage="Lepidoptera" | This must be changed to match your data. Often an uppercase version of the above but not always. Find the avaliable options here https://github.com/tolkit/a-telomeric-repeat-database | 
 
-editing snakefile, editing rules, and assembly+another one is outside in sep file
-link snakemake readme and how to 
-detailed on vim/nano edits in the files
+
+## Viewing Results
+
 
 
 # Resources
-all softwares that we use - paper (chicago or smth) or github (list of links)
-Genomescope github(link to github): help me file / how to starter page (link)
+
+### About Snakemake Pipelines
+What is snakemake - https://academic.oup.com/bioinformatics/article/28/19/2520/290322
+How workflows are coded - https://snakemake.readthedocs.io/en/stable/tutorial/basics.html
+
+### How to use Rstudio to visualize outputs
+Installing R studio - https://posit.co/download/rstudio-desktop/
+Introduction to R markdown - https://www.youtube.com/watch?v=tKUufzpoHDE&ab_channel=JalayerAcademy
+
+### How to edit and move files on command line
+You can edit the Snakefile text with any editing program, including vim - https://opensource.com/article/19/3/getting-started-vim
+How to move files from a cluster (like DCC) to another computer - https://oit-rc.pages.oit.duke.edu/rcsupportdocs/storage/transfers/
+
+### Bioinformatics Software
+https://github.com/tbenavi1/genomescope2.0
+https://github.com/chhylp123/hifiasm
+https://www.htslib.org/
+https://busco.ezlab.org/busco_userguide.html
+https://github.com/tolkit/telomeric-identifier
+https://github.com/ablab/quast
+https://github.com/Dfam-consortium/RepeatModeler
+https://github.com/ncbi/egapx
