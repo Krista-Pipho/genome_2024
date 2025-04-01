@@ -114,9 +114,14 @@ Once the pipeline begins running, either open the slurm log or view the terminal
 
 ## Customizing the Pipeline
 
-The basic version of customizing the pipeline to work on your own data involves editing the top few lines of the 'Snakefile'. 
+The basic version of customizing the pipeline to work on your own data involves editing the top few lines of the 'Snakefile'. The table below shows the existing code and discusses how to make changes. 
 
-Line one starts like this: all_samples=\["SRR13577847"\]
+| Code | Function |
+| --- | --- | 
+| all_samples=\["SRR13577847"\] | The brackets contain a list of 'samples' to analyze. Put one or more sample names in quotes and seperated by commas. Do not include file extensions like .fa |
+| cores="10" | Specifies a number of cores to use in processes where an explicet number must be given. On DCC values above 64 can cause errors. On your local machiene avoid using more that 75% of the avaliable cores. |
+| busco_lineage="lepidoptera" | This must be changed to match your data. Find the avaliable options here https://busco.ezlab.org/list_of_lineages.html | 
+| tidk_lineage="Lepidoptera" | This must be changed to match your data. Often an uppercase version of the above but not always. Find the avaliable options here https://github.com/tolkit/a-telomeric-repeat-database | 
 
 editing snakefile, editing rules, and assembly+another one is outside in sep file
 link snakemake readme and how to 
