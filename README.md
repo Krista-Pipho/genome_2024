@@ -37,19 +37,17 @@ By default the environment is called assembly_env. This includes all the package
 ```
 $ conda create -y --name assembly_env --file environment.txt # you can change assembly_env to any name
 ```
+
 Creating the environment can take a considerable amount of time, expect 10-60 minutes. 
+If creating the environment is sucessful, you should see the text below as output:
 
-done
-#
+```
 # To activate this environment, use
-#
-#     $ conda activate assembly_env
-#
+# conda activate assembly_env
 # To deactivate an active environment, use
-#
-#     $ conda deactivate
-
-If you are on a cluster, you can make this go faster and avoid 'killed' errors by running this as a job. 
+# conda deactivate
+```
+If you are on a cluster, you can make this go faster and avoid 'killed' errors by running this as a job. If you do not see the above message, re-try creating the environment. 
 
 
 ### Step 3: Activate the conda environment
@@ -62,7 +60,7 @@ $ conda activate assembly_env
 
 ### Step 4: Test the pipeline
 
-Here we provide a small test dataset to quickly test that your pipeline installation is functioning.  Please note that this pipeline was designed and optimized using data from heliconius butterflies, not yeast. 
+Here we provide a small test dataset to quickly test that your pipeline installation is functioning. Please note that this pipeline was designed and optimized using data from heliconius butterflies, not yeast. 
 Using example yeast HIFI reads we will go through a test run of the pipeline and its parts.
 
 Download the example data from SRA accession SRR13577847
@@ -72,23 +70,25 @@ $ fasterq-dump SRR13577847
 $ mv SRR13577847.fastq SRR13577847.fa
 ``` 
 
-Before running the pipeline, test if workflow is working properly and estimate the amount of needed resources. 
+Before running the pipeline, test if it is working properly. The command below should produce green and yellow reports about the pipeline. Errors will appear in red. The most common cause of errors is a missmatch between the provided data and the sample names in the Snakefile. The Snakefile as-downloaded should match the sample data but needs to be changed in order to work with your own data. See the customization section below. 
+
 ```
 $ snakemake --dry-run
 ```
 
-Run the pipeline with launch.sh, a file wrapper that contains the Snakemake commands (file name `Snakefile`)  
-If on a cluster, 
+If you see only green and yellow text using the above command you can run the actual analysis. 
+
+If you are not using a cluster, execute the simple command below. 
+```
+$ snakemake 
+```
+
+If you are using a cluster, use the provided slurm launch script. This script tells the cluster how many cores and how much CPU to assign to running the pipeline. You can change the resources used by editing the header of launch.sh. 
+
 ```
 $ sbatch launch.sh
-$ # to view job process
-$ squeue -u userID 
-$ # to monitor live process output, open the corresponding slurm log
 ```
-If not on a cluster,
-```
-$ ./launch.sh
-```
+
 
 <br> 
 
