@@ -14,7 +14,6 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 * **Telomere Identification**: TIDK visualization of telomeric regions (SVG)
 * **Masked Assembly**: RepeatMasker masked genome (FASTA) **COMING SOON**
 * **Gene Annotations**: Coding genes (GFF) and noncoding RNA (GFF) annotations **COMING SOON**
-
 ## Requirements
 * Any version of conda ie [miniconda](https://docs.anaconda.com/miniconda/install/) or bioconda
 * DCC users should follow installation instructions here: https://oit-rc.pages.oit.duke.edu/rcsupportdocs/software/user/
