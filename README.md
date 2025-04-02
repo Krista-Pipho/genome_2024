@@ -130,16 +130,16 @@ The basic version of customizing the pipeline to work on your own data involves 
 # Resources
 
 ### About Snakemake Pipelines
-What is snakemake - https://academic.oup.com/bioinformatics/article/28/19/2520/290322
-How workflows are coded - https://snakemake.readthedocs.io/en/stable/tutorial/basics.html
+What is snakemake - https://academic.oup.com/bioinformatics/article/28/19/2520/290322  
+How workflows are coded - https://snakemake.readthedocs.io/en/stable/tutorial/basics.html  
 
 ### How to use Rstudio to visualize outputs
-Installing R studio - https://posit.co/download/rstudio-desktop/
-Introduction to R markdown - https://www.youtube.com/watch?v=tKUufzpoHDE&ab_channel=JalayerAcademy
+Installing R studio - https://posit.co/download/rstudio-desktop/  
+Introduction to R markdown - https://www.youtube.com/watch?v=tKUufzpoHDE&ab_channel=JalayerAcademy  
 
 ### How to edit and move files on command line
-You can edit the Snakefile text with any editing program, including vim - https://opensource.com/article/19/3/getting-started-vim
-How to move files from a cluster (like DCC) to another computer - https://oit-rc.pages.oit.duke.edu/rcsupportdocs/storage/transfers/
+You can edit the Snakefile text with any editing program, including vim - https://opensource.com/article/19/3/getting-started-vim  
+How to move files from a cluster (like DCC) to another computer - https://oit-rc.pages.oit.duke.edu/rcsupportdocs/storage/transfers/  
 
 ### Bioinformatics Software
 https://github.com/tbenavi1/genomescope2.0
