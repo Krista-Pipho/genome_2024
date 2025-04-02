@@ -142,11 +142,11 @@ You can edit the Snakefile text with any editing program, including vim - https:
 How to move files from a cluster (like DCC) to another computer - https://oit-rc.pages.oit.duke.edu/rcsupportdocs/storage/transfers/  
 
 ### Bioinformatics Software
-https://github.com/tbenavi1/genomescope2.0
-https://github.com/chhylp123/hifiasm
-https://www.htslib.org/
-https://busco.ezlab.org/busco_userguide.html
-https://github.com/tolkit/telomeric-identifier
-https://github.com/ablab/quast
-https://github.com/Dfam-consortium/RepeatModeler
-https://github.com/ncbi/egapx
+Pacbio read qc - https://github.com/tbenavi1/genomescope2.0  
+Assembly - https://github.com/chhylp123/hifiasm  
+Samtools - https://www.htslib.org/  
+Assembly completeness - https://busco.ezlab.org/busco_userguide.html  
+Telomere finder - https://github.com/tolkit/telomeric-identifier  
+Assembly statistics - https://github.com/ablab/quast  
+Repeat finding and masking - https://github.com/Dfam-consortium/RepeatModeler  
+Gene annotation - https://github.com/ncbi/egapx  
