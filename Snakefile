@@ -1,5 +1,5 @@
-all_samples=["danplex"]
-cores="10" # Number of cores, where required to specify 
+all_samples=["SRR13577847"]
+cores="25" # Number of cores, where required to specify 
 busco_lineage="lepidoptera" # Find here https://busco.ezlab.org/list_of_lineages.html
 tidk_lineage="Lepidoptera" # Find here https://github.com/tolkit/a-telomeric-repeat-database
 
@@ -45,7 +45,7 @@ rule assembly:
 	shell:
 		"""
 		# To see or change details of the assembly, open assembly.sh
-		bash assembly.sh {wildcards.sample} {input.hifi_reads}
+		bash assembly.sh {wildcards.sample} {input.hifi_reads} {cores}
 		"""
 rule index:
 	input:
@@ -61,7 +61,6 @@ rule busco:
 	input:
 		assembly="analysis/{sample}/{sample}.p_ctg.fa"
 	output:
-		busco_folder="analysis/{sample}/busco_{sample}/",
 		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
 		full="analysis/{sample}/busco_{sample}/full_table.tsv"
 	shell:
