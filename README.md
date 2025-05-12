@@ -128,6 +128,12 @@ The basic version of customizing the pipeline to work on your own data involves 
 | busco_lineage="lepidoptera" | This must be changed to match your data. Find the avaliable options here https://busco.ezlab.org/list_of_lineages.html | 
 
 
+If your data source gave you a .bam file of HiFi reads, convert it to the correct input for the pipeline using the code below
+
+```
+samtools fasta sample.bam > sample.fa
+```
+
 ## Viewing Results
 
 
