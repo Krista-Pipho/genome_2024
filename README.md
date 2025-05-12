@@ -39,7 +39,7 @@ By default the environment is called assembly_env. This includes all the package
 conda create -y --name assembly_env --file environment.txt # you can change assembly_env to any name
 ```
 
-Creating the environment can take a considerable amount of time, expect 10-60 minutes. 
+Creating the environment can take a considerable amount of time, expect 10-120 minutes. 
 If creating the environment is sucessful, you should see the text below as output:
 
 ```
@@ -48,8 +48,13 @@ If creating the environment is sucessful, you should see the text below as outpu
 # To deactivate an active environment, use
 # conda deactivate
 ```
-If you are on a cluster, you can make this go faster and avoid 'killed' errors by running this as a job. If you do not see the above message, re-try creating the environment. 
+If you do not see the above message, re-try creating the environment.
 
+If you are on a slurm cluster, you can make this go faster and avoid 'killed' errors by running this as a job.  
+
+```
+sbatch build_environment.sh
+```
 
 ### Step 3: Activate the conda environment
 
