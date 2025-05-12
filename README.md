@@ -27,7 +27,7 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 ### Step 1: Install the pipeline from github
 
 ```
-git clone https://github.com/Krista-Pipho/genome_2024.git
+git clone git@github.com:Krista-Pipho/genome_2024.git
 cd genome_2024
 ```
 
