@@ -27,8 +27,8 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 ### Step 1: Install the pipeline from github
 
 ```
-$ git clone https://github.com/Krista-Pipho/genome_2024.git
-$ cd genome_2024
+git clone https://github.com/Krista-Pipho/genome_2024.git
+cd genome_2024
 ```
 
 ### Step 2: Create a conda environment 
@@ -36,7 +36,7 @@ $ cd genome_2024
 By default the environment is called assembly_env. This includes all the packages and software required to run the pipeline. No other software downloads are required.   
 
 ```
-$ conda create -y --name assembly_env --file environment.txt # you can change assembly_env to any name
+conda create -y --name assembly_env --file environment.txt # you can change assembly_env to any name
 ```
 
 Creating the environment can take a considerable amount of time, expect 10-60 minutes. 
@@ -56,7 +56,7 @@ If you are on a cluster, you can make this go faster and avoid 'killed' errors b
 The environment must be activated every time the pipeline is used, not just for installation. 
 
 ```
-$ conda activate assembly_env
+conda activate assembly_env
 ```
 
 ### Step 4: Test the pipeline
@@ -67,27 +67,27 @@ Using example yeast HIFI reads we will go through a test run of the pipeline and
 Download the example data from SRA accession SRR13577847
 
 ```
-$ fasterq-dump SRR13577847
-$ mv SRR13577847.fastq SRR13577847.fa
+fasterq-dump SRR13577847
+mv SRR13577847.fastq SRR13577847.fa
 ``` 
 
 Before running the pipeline, test if it is working properly. The command below should produce green and yellow reports about the pipeline. Errors will appear in red. The most common cause of errors is a missmatch between the provided data and the sample names in the Snakefile. The Snakefile as-downloaded should match the sample data but needs to be changed in order to work with your own data. See the customization section below. 
 
 ```
-$ snakemake --dry-run
+snakemake --dry-run
 ```
 
 If you see only green and yellow text using the above command you can run the actual analysis. 
 
 If you are not using a cluster, execute the simple command below. 
 ```
-$ snakemake 
+snakemake 
 ```
 
 If you are using a cluster, use the provided slurm launch script. This script tells the cluster how many cores and how much ram to assign to running the pipeline. You can change the resources used by editing the header of launch.sh. 
 
 ```
-$ sbatch launch.sh
+sbatch launch.sh
 ```
 
 
