@@ -50,7 +50,8 @@ If creating the environment is sucessful, you should see the text below as outpu
 ```
 If you do not see the above message, re-try creating the environment.
 
-If you are on a slurm cluster, you can make this go faster and avoid 'killed' errors by running this as a job.  
+DCC users, you can make this go faster and avoid 'killed' errors by running this using the command below. 
+For other slurm cluster users, remove the partition specification in build_environment.sh
 
 ```
 sbatch build_environment.sh
@@ -89,7 +90,8 @@ If you are not using a cluster, execute the simple command below.
 snakemake 
 ```
 
-If you are using a cluster, use the provided slurm launch script. This script tells the cluster how many cores and how much ram to assign to running the pipeline. You can change the resources used by editing the header of launch.sh. 
+DCC users, use the provided slurm launch script. This script tells the cluster how many cores and how much ram to assign to running the pipeline. You can change the resources used by editing the header of launch.sh. 
+For other slurm cluster users, remove the partition specification in build_environment.sh
 
 ```
 sbatch launch.sh
