@@ -1,4 +1,4 @@
-all_samples=["SRR13577847.fa"]
+all_samples=["SRR13577847"]
 cores="25" # Number of cores, where required to specify 
 busco_lineage="saccharomycetes" # Find here https://busco.ezlab.org/list_of_lineages.html
 tidk_lineage="NA" # Find here https://github.com/tolkit/a-telomeric-repeat-database
