@@ -59,7 +59,6 @@ rule busco:
 	output:
 		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
 		full="analysis/{sample}/busco_{sample}/full_table.tsv",
-		busco_folder="analysis/{sample}/busco_{sample}"
 	shell:
 		"""
 		# Use singularity docker to run BUSCO using the specific lineage entered at the top of this file
@@ -68,7 +67,7 @@ rule busco:
 
 		# Moves the BUSCO output to a location that snakemake can understand
 		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
-		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsvi
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
 		"""
 
 rule telo:
@@ -99,7 +98,6 @@ rule clean_results:
 		report="analysis/{sample}/quast_{sample}/report.txt",
 		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
 		full="analysis/{sample}/busco_{sample}/full_table.tsv",
-		busco_folder="analysis/{sample}/busco_{sample}"
 
 	output:
 		index_copy="results/{sample}/{sample}.fa.fai",
@@ -114,6 +112,6 @@ rule clean_results:
 		
 		# Modify BUSCO outputs to make them compatible with the downstream visualization tools provided. Store in results
 		# Modify QUAST outputs to make them compatible with the downstream visualization tools provided. Store in results
-		bash summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.busco_folder} {output.busco_summary} {output.busco_full}
+		bash summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.summary} {input.full} {output.busco_summary} {output.busco_full}
 		"""
 
