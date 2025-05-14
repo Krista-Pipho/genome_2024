@@ -1,7 +1,7 @@
-all_samples=["hmr"]
+all_samples=["SRR13577847.fa"]
 cores="25" # Number of cores, where required to specify 
-busco_lineage="lepidoptera" # Find here https://busco.ezlab.org/list_of_lineages.html
-tidk_lineage="Lepidoptera" # Find here https://github.com/tolkit/a-telomeric-repeat-database
+busco_lineage="saccharomycetes" # Find here https://busco.ezlab.org/list_of_lineages.html
+tidk_lineage="NA" # Find here https://github.com/tolkit/a-telomeric-repeat-database
 
 rule targets:
 	input:
@@ -9,7 +9,7 @@ rule targets:
 		expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
 		expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
 		expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
-		expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples), #telo
+	#	expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples), #telo
 		expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), #results 
         
