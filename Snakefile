@@ -1,21 +1,17 @@
-all_samples=["SRR13577847"]
+all_samples=["hmr"]
 cores="25" # Number of cores, where required to specify 
 busco_lineage="lepidoptera" # Find here https://busco.ezlab.org/list_of_lineages.html
 tidk_lineage="Lepidoptera" # Find here https://github.com/tolkit/a-telomeric-repeat-database
 
 rule targets:
 	input:
-#		expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples), #fasta_qc
+		expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples), #fasta_qc
 		expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
 		expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
-		expand("analysis/{sample}/busco_{sample}/full_table.tsv", sample=all_samples), #busco
-#		expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples), #telo
+		expand("analysis/{sample}/busco_{sample}/run_{busco_lineage}_odb10/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
+		expand("results/{sample}/tidk_{sample}.svg", sample=all_samples), #telo
 		expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), #results 
-#		expand("analysis/{sample}/../analysis/snake/{sample}.bp.p_ctg.gfa", sample=all_samples), #assembly
-#		expand("../logs/{sample}.log", sample=all_samples),
-#		expand("../analysis/{sample}.linear_plot.png", sample=all_samples), #fasta_qc
-#		"../analysis/allAnnotation_{sample}.gff" #annotations
         
 rule data_qc:
 	input:
@@ -62,7 +58,8 @@ rule busco:
 		assembly="analysis/{sample}/{sample}.p_ctg.fa"
 	output:
 		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
-		full="analysis/{sample}/busco_{sample}/full_table.tsv"
+		full="analysis/{sample}/busco_{sample}/full_table.tsv",
+		busco_folder="analysis/{sample}/busco_{sample}/"
 	shell:
 		"""
 		# Use singularity docker to run BUSCO using the specific lineage entered at the top of this file
@@ -117,37 +114,4 @@ rule clean_results:
 		# Modify QUAST outputs to make them compatible with the downstream visualization tools provided. Store in results
 		bash summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.busco_folder} {output.busco_summary} {output.busco_full}
 		"""
-rule masking:
-	input: 
-		"../analysis/snake/{sample}.bp.p_ctg.gfa"
-	output:
-		"../analysis/{sample}.bp.p_ctg.masked.fasta"
-	shell:
-		"""
-		bash scripts/maskingFasta.py"
-		"""
 
-rule geneAnnotations:
-	input:
-		"../analysis/{sample}.bp.p_ctg.masked.fasta"
-	output:
-		"../analysis/geneAnnotation_{sample}.gff"
-	script:
-		"scripts/geneGFF.py" 
-
-rule noncodingAnnotations:
-	input:
-		"../analysis/{sample}.bp.p_ctg.masked.fasta"
-	output:
-		"../analysis/noncodingAnnotation_{sample}.gff"
-	script:
-		"scripts/noncodingGFF.py" 
-
-rule combinedGFF:
-	input:
-		"../analysis/geneAnnotation_{sample}.gff",
-		"../analysis/noncodingAnnotation_{sample}.gff"
-	output:
-		"../analysis/allAnnotation_{sample}.gff"
-	script:
-		"combineGFF.py"
