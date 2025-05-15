@@ -13,8 +13,8 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTA or BAM format as **in
 * **Completeness Assessment**: BUSCO analysis to evaluate genome completeness (TXT, TSV)
 * **Quality Evaluation**: QUAST report with key assembly metrics (TXT)
 * **Telomere Identification**: TIDK visualization of telomeric regions (SVG)
-* **Masked Assembly**: RepeatMasker masked genome (FASTA) **COMING SOON**
-* **Gene Annotations**: Coding genes (GFF) and noncoding RNA (GFF) annotations **COMING SOON**
+* **Summary of Results**: The clean_results rule creates a folder in results/{sample}
+* **Visualization of Results**: The results/{sample} folder can visualized using assembly_pipeline_summary.Rmd
 
 ## Requirements
 * Any version of conda ie [miniconda](https://docs.anaconda.com/miniconda/install/) or bioconda
