@@ -11,7 +11,7 @@ busco_full_out=$7
 # Modify QUAST outputs to make them compatible with the downstream visualization tools provided. Store in results
 echo $sample > $quast_out
 cat $quast_in | grep "contigs (>= 0 bp) " | awk -F '  +' '{print $2}' >> $quast_out
-cat $quast_in | grep "contigs (>= 0 bp) " | awk -F '  +' '{print $2}' >> $quast_out
+cat $quast_in | grep L50 | awk -F '  +' '{print $2}' >> $quast_out
 cat $quast_in | grep L90 | awk -F '  +' '{print $2}' >> $quast_out
 
 # Modify BUSCO outputs to make them compatible with the downstream visualization tools provided. Store in results
