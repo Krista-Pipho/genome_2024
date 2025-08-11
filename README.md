@@ -136,9 +136,9 @@ If your data source gave you a .bam file of HiFi reads, convert it to the correc
 samtools fasta sample.bam > sample.fa
 ```
 
-You can run the summary functions of the pipeline on existing assemblies by creating a folder with the desired sample name within the analysis folder. Place the genome fasta at this file location: analysis/{sample}/{sample}.p_ctg.fa
-Then change the sample line within the Snakefile to 
-```all_samples=\["sample"\]```
+You can run the summary functions of the pipeline on existing assemblies by creating a folder with the desired sample name within the analysis folder. Place the genome fasta at this file location: analysis/{sample}/{sample}.p_ctg.fa  
+Then change the sample line within the Snakefile to:
+```all_samples=["sample"]```
 
 ## Viewing Results
 
