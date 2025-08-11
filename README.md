@@ -136,8 +136,15 @@ If your data source gave you a .bam file of HiFi reads, convert it to the correc
 samtools fasta sample.bam > sample.fa
 ```
 
+You can run the summary functions of the pipeline on existing assemblies by creating a folder with the desired sample name within the analysis folder. Place the genome fasta at this file location: analysis/{sample}/{sample}.p_ctg.fa
+Then change the sample line within the Snakefile to 
+```all_samples=\["sample"\]```
+
 ## Viewing Results
 
+Raw results are present in the relevant subfolders of the analysis folder. Curated results relevant to this workflow's visualization code can be found within the results folder. 
+  
+The specific visualization RMD included in this workflow is designed to assess how two assemblies compare to eachother. This can productively be used to compare a new assembly to the previous standard in the field, to compare assemblies from different individuals or species, or to compare assembly conditions which you have customized by editing the HIFIasm command within the assembly.sh script. To use the visualization RMD, copy the entire sample folder from results on DCC into a working directory onto your local machiene from with the assembly_pipeline_summary.Rmd file. 
 
 
 # Resources
