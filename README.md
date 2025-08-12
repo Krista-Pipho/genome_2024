@@ -36,7 +36,7 @@ cd genome_2024
 By default the environment is called assembly_env. This includes all the packages and software required to run the pipeline. No other software downloads are required.   
 
 ```
-conda create -y --name assembly_env --file environment.txt # you can change assembly_env to any name
+conda env create -f environment.yml 
 ```
 
 Creating the environment can take a considerable amount of time, expect 10-120 minutes. 
