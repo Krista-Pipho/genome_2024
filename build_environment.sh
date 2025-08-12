@@ -3,4 +3,4 @@
 #SBATCH -c32
 #SBATCH --partition=scavenger
 
-conda env create -f environment.txt
+conda env create -f environment.yml
