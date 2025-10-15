@@ -1,5 +1,17 @@
 
-all_samples: ["SRR13577847"]
-cores: "25" # Number of cores, where required to specify 
+sample: "SRR13577847" # Sample name, used for naming input and output files
+cores: 60 # Number of cores, where required to specify 
+
+# Optional operations to perform
+filter_reads: False # Whether to filter reads with kraken2 before assembly
+run_genomescope: True # Whether to run genomescope2
+generate_data_for_dotplot: True # Whether to generate data for dotplots comparing assembly to a reference genome
+find_telomeres: False # Whether to run tidk to find telomeric repeats
+
 busco_lineage: "saccharomycetes" # Find here https://busco.ezlab.org/list_of_lineages.html
 tidk_lineage: "NA" # Find here https://github.com/tolkit/a-telomeric-repeat-database
+compare_assembly: "S288C_ref.gfa" # Assembly to compare against for dotplots
+
+# Download a small (8gb) standard kraken2 database, find this and others at https://benlangmead.github.io/aws-indexes/k2
+# For errors, check that the download location hard coded in kraken_snakemake.smk line # is still correct 
+kraken_database: "k2_standard_08_GB_20250714" # Name of the kraken2 database file

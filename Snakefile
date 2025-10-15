@@ -4,14 +4,14 @@ os.environ['SSL_CERT_FILE'] = certifi.where()
 
 configfile: "config.yaml"
 
-all_samples = config["all_samples"]
+all_samples = config["sample"]
 cores = config["cores"]
 busco_lineage = config["busco_lineage"]
 tidk_lineage = config["tidk_lineage"]
 
 rule targets:
 	input:
-	#	expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples), #fasta_qc
+	#	expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_sample), #fasta_qc
 		expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
 		expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
 		expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
