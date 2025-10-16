@@ -3,6 +3,7 @@ results/*/
 busco*
 *.fa
 *.gfa
+*.html
 slurm*
 .snakemake
 .DS_Store

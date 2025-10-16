@@ -49,7 +49,7 @@ rule assembly:
 	shell:
 		"""
 		# To see or change details of the assembly, open assembly.sh
-		bash assembly.sh {wildcards.sample} {input.hifi_reads} {cores}
+		bash bin/assembly.sh {wildcards.sample} {input.hifi_reads} {cores}
 		"""
 rule index:
 	input:
@@ -86,7 +86,7 @@ rule telo:
 	shell:
 		"""
 		# To see or change details of telomere finding, open telomere.sh
-		bash telomere.sh {wildcards.sample} {input.assembly} {tidk_lineage}
+		bash bin/telomere.sh {wildcards.sample} {input.assembly} {tidk_lineage}
 		"""
 
 rule quast:
@@ -120,6 +120,6 @@ rule clean_results:
 		
 		# Modify BUSCO outputs to make them compatible with the downstream visualization tools provided. Store in results
 		# Modify QUAST outputs to make them compatible with the downstream visualization tools provided. Store in results
-		bash summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.summary} {input.full} {output.busco_summary} {output.busco_full}
+		bash bin/summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.summary} {input.full} {output.busco_summary} {output.busco_full}
 		"""
 
