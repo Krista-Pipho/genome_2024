@@ -7,23 +7,79 @@ configfile: "config.yaml"
 all_samples = config["sample"]
 cores = config["cores"]
 busco_lineage = config["busco_lineage"]
-tidk_lineage = config["tidk_lineage"]
 
-rule targets:
-	input:
-	#	expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_sample), #fasta_qc
+### Conditional Operations
+filter_reads = config["filter_reads"]
+run_genomescope = config["run_genomescope"]
+find_telomeres = config["find_telomeres"]
+generate_data_for_dotplot = config["generate_data_for_dotplot"]
+
+### Values needed by conditional operations
+kraken_database = config["kraken_database"]
+tidk_lineage = config["tidk_lineage"]
+compare_assembly = config["compare_assembly"]
+
+all_targets = [
 		expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
 		expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
 		expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
 	#	expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples), #telo
 		expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
-		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), #results 
-        
+		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
+]
 
+if filter_reads == True:
+    all_targets.append(expand("{sample}_classified.fa", sample=all_samples))
+
+if run_genomescope == True:
+	all_targets.append(expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples))
+
+if find_telomeres == True:
+	all_targets.append(expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples))	
+
+if generate_data_for_dotplot == True:
+	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}.coords", sample=all_samples, compare_assembly=compare_assembly))
+
+rule targets:
+	input:		
+		all_targets
+
+rule download_reads:
+	output:
+		"{sample}.fastq"
+	shell:
+		"""
+		bin/fasterq-dump {wildcards.sample}
+		"""
+
+rule kraken:
+	input:
+		sample="{sample}.fa"
+	output:
+		classified="{sample}_classified.fa"
+	shell:
+		"""
+		kraken_db={kraken_database}
+
+		if [ ! -d "$kraken_db" ]; then
+			echo "$kraken_db does not exist."
+			mkdir {kraken_database}
+			cd {kraken_database}
+
+			# Downloads zipped database, extracts database files, and removes the zipped file
+			echo "Downloading $kraken_db"
+			wget -q https://genome-idx.s3.amazonaws.com/kraken/{kraken_database}.tar.gz
+			tar -xf {kraken_database}.tar.gz
+			rm {kraken_database}.tar.gz
+			cd ..
+		fi
+
+		singularity exec -B $(pwd) docker://staphb/kraken2 kraken2 classify --db {kraken_database} --quick --threads {cores} --unclassified-out unclassified_{wildcards.sample} --classified-out classified_{wildcards.sample} --output {wildcards.sample}.output --report {wildcards.sample}.report {wildcards.sample}.fa
+		"""
 
 rule data_qc:
 	input:
-		hifi_reads="{sample}.fa"
+		hifi_reads="{sample}.fastq"
 	output:
 		genomescope="analysis/{sample}/genomescope_{sample}/linear_plot.png",
 		genomescope_copy="results/{sample}/{sample}_genomescope.png" 
@@ -33,7 +89,7 @@ rule data_qc:
 		# Find more information here. -m is kmer length, -s is memory, -t is threads
 		jellyfish count -C -m 20 -s 1000000000 -t {cores} {input.hifi_reads} -o analysis/{wildcards.sample}/{wildcards.sample}.jf
 		jellyfish histo -t 10 analysis/{wildcards.sample}/{wildcards.sample}.jf > analysis/{wildcards.sample}/{wildcards.sample}.histo
-		
+
 		# Run genomescope
 		genomescope2 -i analysis/{wildcards.sample}/{wildcards.sample}.histo -o analysis/{wildcards.sample}/genomescope_{wildcards.sample} -k 20 #kmer_size	
 
@@ -43,7 +99,7 @@ rule data_qc:
 
 rule assembly:
 	input:
-		hifi_reads="{sample}.fa"
+		hifi_reads="{sample}.fastq"
 	output:
 		"analysis/{sample}/{sample}.p_ctg.fa",
 	shell:
@@ -51,6 +107,7 @@ rule assembly:
 		# To see or change details of the assembly, open assembly.sh
 		bash bin/assembly.sh {wildcards.sample} {input.hifi_reads} {cores}
 		"""
+
 rule index:
 	input:
 		assembly="analysis/{sample}/{sample}.p_ctg.fa"
@@ -61,6 +118,7 @@ rule index:
 		# Index the newly assembled genome
 		samtools faidx {input.assembly}
 		"""
+
 rule busco:
 	input:
 		assembly="analysis/{sample}/{sample}.p_ctg.fa"
@@ -72,10 +130,25 @@ rule busco:
 		# Use singularity docker to run BUSCO using the specific lineage entered at the top of this file
 		# BUSCO generates both a summary with percent of genes found, and a full output of each gene location
 		singularity exec -B $(pwd) docker://ezlabgva/busco:v6.0.0_cv1 busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
-		#busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
+
 		# Moves the BUSCO output to a location that snakemake can understand
 		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb12/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
 		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb12/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
+		"""
+
+rule dotplot:
+	input:
+		assembly="analysis/{sample}/{sample}.p_ctg.fa",
+		compare_assembly={compare_assembly}
+	output:
+		"results/{sample}/{sample}_{compare_assembly}.coords",
+		"results/{sample}/{sample}_{compare_assembly}.coords.idx"
+	shell:
+		"""
+		singularity exec -B $(pwd) docker://staphb/mummer:4.0.1 nucmer {input.assembly} {input.compare_assembly} -p analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}
+		python DotPrep.py --out results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly} --delta analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.delta
+		# To visualize the dotplot, upload the .coords file to the website below
+		# https://dot.sandbox.bio/
 		"""
 
 rule telo:
@@ -97,7 +170,7 @@ rule quast:
 	shell:
 		"""
 		# Run quast 
-		quast -o analysis/{wildcards.sample}/quast_{wildcards.sample} {input.assembly}
+		singularity exec -B $(pwd) docker://nanozoo/quast quast -o analysis/{wildcards.sample}/quast_{wildcards.sample} {input.assembly}
 		"""
 
 rule clean_results:
@@ -106,20 +179,17 @@ rule clean_results:
 		report="analysis/{sample}/quast_{sample}/report.txt",
 		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
 		full="analysis/{sample}/busco_{sample}/full_table.tsv",
-
 	output:
 		index_copy="results/{sample}/{sample}.fa.fai",
 		quast_report="results/{sample}/{sample}_quast_table.txt",
 		busco_summary="results/{sample}/{sample}_busco_table.txt",
 		busco_full="results/{sample}/{sample}_full_busco_table.txt",
-
 	shell:
 		"""
 		# Because the index has information about scaffold number and size this file is copied to the results folder 
 		cp {input.index} {output.index_copy}
-		
+
 		# Modify BUSCO outputs to make them compatible with the downstream visualization tools provided. Store in results
 		# Modify QUAST outputs to make them compatible with the downstream visualization tools provided. Store in results
 		bash bin/summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.summary} {input.full} {output.busco_summary} {output.busco_full}
 		"""
-
