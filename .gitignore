@@ -1,6 +1,8 @@
 analysis/*/
 results/*/
+k2*/
 busco*
+*.fastq
 *.fa
 *.gfa
 *.html

@@ -20,16 +20,15 @@ tidk_lineage = config["tidk_lineage"]
 compare_assembly = config["compare_assembly"]
 
 all_targets = [
-		expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
-		expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
-		expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
-	#	expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples), #telo
-		expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
+		#expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
+		#expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
+		#expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
+		#expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
 ]
 
 if filter_reads == True:
-    all_targets.append(expand("{sample}_classified.fa", sample=all_samples))
+	all_targets.append(expand("results/{sample}/{sample}.report", sample=all_samples))
 
 if run_genomescope == True:
 	all_targets.append(expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples))
@@ -49,20 +48,22 @@ rule download_reads:
 		"{sample}.fastq"
 	shell:
 		"""
-		bin/fasterq-dump {wildcards.sample}
+		fasterq-dump {wildcards.sample}
 		"""
 
 rule kraken:
-	input:
-		sample="{sample}.fa"
+	input: 
+		reads="{sample}.fastq"
 	output:
-		classified="{sample}_classified.fa"
+		unfiltered="analysis/{sample}/{sample}_unfiltered.fastq",
+		contaminants="analysis/{sample}/{sample}_classified.fq",
+		report="results/{sample}/{sample}.report",
 	shell:
 		"""
 		kraken_db={kraken_database}
 
 		if [ ! -d "$kraken_db" ]; then
-			echo "$kraken_db does not exist."
+			echo "$kraken_db does not exist."		
 			mkdir {kraken_database}
 			cd {kraken_database}
 
@@ -74,12 +75,22 @@ rule kraken:
 			cd ..
 		fi
 
-		singularity exec -B $(pwd) docker://staphb/kraken2 kraken2 classify --db {kraken_database} --quick --threads {cores} --unclassified-out unclassified_{wildcards.sample} --classified-out classified_{wildcards.sample} --output {wildcards.sample}.output --report {wildcards.sample}.report {wildcards.sample}.fa
+		singularity exec -B $(pwd) docker://staphb/kraken2 kraken2 --db {kraken_database} --threads {cores} --confidence .1 --unclassified-out analysis/{wildcards.sample}/unclassified_{wildcards.sample}.fq --classified-out {output.contaminants} --output analysis/{wildcards.sample}/kraken.output --report {output.report} {input.reads}
+		
+		# Stores original reads in a file labled unfiltered
+		mv {input.reads} {output.unfiltered}
+		# Moves the filtered reads not classified by kraken as a comtaminant to sample.fastq for downstream analysis
+		mv analysis/{wildcards.sample}/unclassified_{wildcards.sample}.fq {wildcards.sample}.fastq 
 		"""
+
+qc_input = []
+if filter_reads == True:
+	qc_input.append("results/{sample}/{sample}.report")
 
 rule data_qc:
 	input:
-		hifi_reads="{sample}.fastq"
+		hifi_reads="{sample}.fastq", 
+		optional_input=qc_input
 	output:
 		genomescope="analysis/{sample}/genomescope_{sample}/linear_plot.png",
 		genomescope_copy="results/{sample}/{sample}_genomescope.png" 
@@ -97,11 +108,16 @@ rule data_qc:
 		cp {output.genomescope} {output.genomescope_copy}
 		"""
 
+assembly_input = []
+if filter_reads == True:
+	assembly_input.append("results/{sample}/{sample}.report")
 rule assembly:
 	input:
-		hifi_reads="{sample}.fastq"
+		hifi_reads="{sample}.fastq",
+		optional_input=assembly_input
 	output:
-		"analysis/{sample}/{sample}.p_ctg.fa",
+		hifiasm_output="analysis/{sample}/{sample}.bp.p_ctg.gfa",
+		assembly="{sample}.gfa"
 	shell:
 		"""
 		# To see or change details of the assembly, open assembly.sh
@@ -110,18 +126,18 @@ rule assembly:
 
 rule index:
 	input:
-		assembly="analysis/{sample}/{sample}.p_ctg.fa"
+		assembly="{sample}.gfa"
 	output:
-		index="analysis/{sample}/{sample}.p_ctg.fa.fai"
+		index="analysis/{sample}/{sample}.gfa.fai"
 	shell:
 		"""
 		# Index the newly assembled genome
-		samtools faidx {input.assembly}
+		samtools faidx --fai-idx analysis/{wildcards.sample}/{input.assembly}.fai {input.assembly}
 		"""
 
 rule busco:
 	input:
-		assembly="analysis/{sample}/{sample}.p_ctg.fa"
+		assembly="{sample}.gfa"
 	output:
 		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
 		full="analysis/{sample}/busco_{sample}/full_table.tsv",
@@ -138,7 +154,7 @@ rule busco:
 
 rule dotplot:
 	input:
-		assembly="analysis/{sample}/{sample}.p_ctg.fa",
+		assembly="{sample}.gfa",
 		compare_assembly={compare_assembly}
 	output:
 		"results/{sample}/{sample}_{compare_assembly}.coords",
@@ -146,14 +162,14 @@ rule dotplot:
 	shell:
 		"""
 		singularity exec -B $(pwd) docker://staphb/mummer:4.0.1 nucmer {input.assembly} {input.compare_assembly} -p analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}
-		python DotPrep.py --out results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly} --delta analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.delta
+		python bin/DotPrep.py --out results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly} --delta analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.delta
 		# To visualize the dotplot, upload the .coords file to the website below
 		# https://dot.sandbox.bio/
 		"""
 
 rule telo:
 	input:
-		assembly="analysis/{sample}/{sample}.p_ctg.fa"
+		assembly="{sample}.gfa"
 	output:
 		"analysis/{sample}/tidk_{sample}.svg"
 	shell:
@@ -164,7 +180,7 @@ rule telo:
 
 rule quast:
 	input:
-		assembly="analysis/{sample}/{sample}.p_ctg.fa"
+		assembly="{sample}.gfa"
 	output:
 		report="analysis/{sample}/quast_{sample}/report.txt"
 	shell:
@@ -175,7 +191,7 @@ rule quast:
 
 rule clean_results:
 	input: 
-		index="analysis/{sample}/{sample}.p_ctg.fa.fai",
+		index="analysis/{sample}/{sample}.gfa.fai",
 		report="analysis/{sample}/quast_{sample}/report.txt",
 		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
 		full="analysis/{sample}/busco_{sample}/full_table.tsv",
@@ -193,3 +209,5 @@ rule clean_results:
 		# Modify QUAST outputs to make them compatible with the downstream visualization tools provided. Store in results
 		bash bin/summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.summary} {input.full} {output.busco_summary} {output.busco_full}
 		"""
+
+#rule render_summary_rmd:
