@@ -25,6 +25,7 @@ all_targets = [
 		#expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
 		#expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
+		expand("{sample}_{compare_assembly}_assembly_summary.html", sample=all_samples, compare_assembly=compare_assembly) # generate final summary html report
 ]
 
 if filter_reads == True:
@@ -98,8 +99,8 @@ rule data_qc:
 		"""
 		# Make intermediate files for genomescope analysis using Jellyfish
 		# Find more information here. -m is kmer length, -s is memory, -t is threads
-		singularity exec docker://biodckrdev/jellyfish:2.2.3 jellyfish count -C -m 20 -s 1000000000 -t {cores} {input.hifi_reads} -o analysis/{wildcards.sample}/{wildcards.sample}.jf
-		singularity exec docker://biodckrdev/jellyfish:2.2.3 jellyfish histo -t 10 analysis/{wildcards.sample}/{wildcards.sample}.jf > analysis/{wildcards.sample}/{wildcards.sample}.histo
+		singularity exec -B $(pwd) docker://biodckrdev/jellyfish:2.2.3 jellyfish count -C -m 20 -s 1000000000 -t {cores} {input.hifi_reads} -o analysis/{wildcards.sample}/{wildcards.sample}.jf
+		singularity exec -B $(pwd) docker://biodckrdev/jellyfish:2.2.3 jellyfish histo -t 10 analysis/{wildcards.sample}/{wildcards.sample}.jf > analysis/{wildcards.sample}/{wildcards.sample}.histo
 
 		# Run genomescope
 		genomescope2 -i analysis/{wildcards.sample}/{wildcards.sample}.histo -o analysis/{wildcards.sample}/genomescope_{wildcards.sample} -k 20 #kmer_size	
@@ -155,7 +156,7 @@ rule busco:
 rule dotplot:
 	input:
 		assembly="{sample}.gfa",
-		compare_assembly={compare_assembly}
+		compare_assembly="{compare_assembly}.gfa"
 	output:
 		"results/{sample}/{sample}_{compare_assembly}.coords",
 		"results/{sample}/{sample}_{compare_assembly}.coords.idx"
@@ -210,4 +211,20 @@ rule clean_results:
 		bash bin/summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.summary} {input.full} {output.busco_summary} {output.busco_full}
 		"""
 
-#rule render_summary_rmd:
+rule render_summary_rmd:
+	input:
+		main_index_copy="results/{sample}/{sample}.fa.fai",
+		main_quast_report="results/{sample}/{sample}_quast_table.txt",
+		main_busco_summary="results/{sample}/{sample}_busco_table.txt",
+		main_busco_full="results/{sample}/{sample}_full_busco_table.txt",
+		alt_index_copy="results/{compare_assembly}/{compare_assembly}.fa.fai",
+		alt_quast_report="results/{compare_assembly}/{compare_assembly}_quast_table.txt",
+		alt_busco_summary="results/{compare_assembly}/{compare_assembly}_busco_table.txt",
+		alt_busco_full="results/{compare_assembly}/{compare_assembly}_full_busco_table.txt",
+	output:
+		summary="{sample}_{compare_assembly}_assembly_summary.html"
+	shell:
+		"""
+		pixi run Rscript -e "rmarkdown::render('assembly_pipeline_summary.Rmd', output_file='{output.summary}', param=list(primary_genome='{wildcards.sample}',compare_genome='{wildcards.compare_assembly}'))"
+		"""
+
