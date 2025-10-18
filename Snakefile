@@ -98,8 +98,8 @@ rule data_qc:
 		"""
 		# Make intermediate files for genomescope analysis using Jellyfish
 		# Find more information here. -m is kmer length, -s is memory, -t is threads
-		jellyfish count -C -m 20 -s 1000000000 -t {cores} {input.hifi_reads} -o analysis/{wildcards.sample}/{wildcards.sample}.jf
-		jellyfish histo -t 10 analysis/{wildcards.sample}/{wildcards.sample}.jf > analysis/{wildcards.sample}/{wildcards.sample}.histo
+		singularity exec docker://biodckrdev/jellyfish:2.2.3 jellyfish count -C -m 20 -s 1000000000 -t {cores} {input.hifi_reads} -o analysis/{wildcards.sample}/{wildcards.sample}.jf
+		singularity exec docker://biodckrdev/jellyfish:2.2.3 jellyfish histo -t 10 analysis/{wildcards.sample}/{wildcards.sample}.jf > analysis/{wildcards.sample}/{wildcards.sample}.histo
 
 		# Run genomescope
 		genomescope2 -i analysis/{wildcards.sample}/{wildcards.sample}.histo -o analysis/{wildcards.sample}/genomescope_{wildcards.sample} -k 20 #kmer_size	
