@@ -1,6 +1,6 @@
 
 sample: "SRR13577847" # Sample name, used for naming input and output files
-compare_assembly: "S288C_ref" # Assembly to compare against for dotplots
+compare_assembly: "S288C_ref.gfa" # Assembly to compare against for dotplots
 cores: 30 # Number of cores, where required to specify 
 
 # Optional operations to perform
