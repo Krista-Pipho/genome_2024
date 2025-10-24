@@ -4,9 +4,10 @@ os.environ['SSL_CERT_FILE'] = certifi.where()
 
 configfile: "config.yaml"
 
-all_samples = config["sample"]
+all_samples = [config["sample"], config["compare_assembly"]]
 cores = config["cores"]
 busco_lineage = config["busco_lineage"]
+
 
 ### Conditional Operations
 filter_reads = config["filter_reads"]
@@ -17,7 +18,7 @@ generate_data_for_dotplot = config["generate_data_for_dotplot"]
 ### Values needed by conditional operations
 kraken_database = config["kraken_database"]
 tidk_lineage = config["tidk_lineage"]
-compare_assembly = config["compare_assembly"]
+
 
 all_targets = [
 		#expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
@@ -25,20 +26,21 @@ all_targets = [
 		#expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
 		#expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
-		expand("{sample}_{compare_assembly}_assembly_summary.html", sample=all_samples, compare_assembly=compare_assembly) # generate final summary html report
+		expand("{primary_assembly}_{compare_assembly}_assembly_summary.html", primary_assembly=all_samples[0], compare_assembly=all_samples[1]) # generate final summary html report
 ]
 
 if filter_reads == True:
-	all_targets.append(expand("results/{sample}/{sample}.report", sample=all_samples))
+	all_targets.append(expand("results/{sample}/{sample}.report", sample=all_samples[0]))
 
 if run_genomescope == True:
-	all_targets.append(expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples))
+	all_targets.append(expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples[0]))
 
 if find_telomeres == True:
 	all_targets.append(expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples))	
 
 if generate_data_for_dotplot == True:
-	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}.coords", sample=all_samples, compare_assembly=compare_assembly))
+	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}.coords", sample=all_samples[0], compare_assembly=all_samples[1]))
+	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}.coords", sample=all_samples[1], compare_assembly=all_samples[0]))
 
 rule targets:
 	input:		
@@ -213,18 +215,12 @@ rule clean_results:
 
 rule render_summary_rmd:
 	input:
-		main_index_copy="results/{sample}/{sample}.fa.fai",
-		main_quast_report="results/{sample}/{sample}_quast_table.txt",
-		main_busco_summary="results/{sample}/{sample}_busco_table.txt",
-		main_busco_full="results/{sample}/{sample}_full_busco_table.txt",
-		alt_index_copy="results/{compare_assembly}/{compare_assembly}.fa.fai",
-		alt_quast_report="results/{compare_assembly}/{compare_assembly}_quast_table.txt",
-		alt_busco_summary="results/{compare_assembly}/{compare_assembly}_busco_table.txt",
-		alt_busco_full="results/{compare_assembly}/{compare_assembly}_full_busco_table.txt",
+		primary_summary = expand("results/{sample}/{sample}_full_busco_table.txt", sample=all_samples[0]),
+		compare_summary = expand("results/{sample}/{sample}_full_busco_table.txt", sample=all_samples[1])
 	output:
-		summary="{sample}_{compare_assembly}_assembly_summary.html"
+		summary=expand("{primary_assembly}_{compare_assembly}_assembly_summary.html", primary_assembly=all_samples[0], compare_assembly=all_samples[1])
 	shell:
 		"""
-		pixi run Rscript -e "rmarkdown::render('assembly_pipeline_summary.Rmd', output_file='{output.summary}', param=list(primary_genome='{wildcards.sample}',compare_genome='{wildcards.compare_assembly}'))"
+		pixi run Rscript -e "rmarkdown::render('assembly_pipeline_summary.Rmd', output_file='{output.summary}', param=list(primary_genome='{all_samples[0]}',compare_genome='{all_samples[1]}'))"
 		"""
 
