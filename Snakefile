@@ -51,7 +51,7 @@ rule download_reads:
 		"{sample}.fastq"
 	shell:
 		"""
-		fasterq-dump {wildcards.sample}
+		singularity exec -B $(pwd) docker://ncbi/sra-tools fasterq-dump {wildcards.sample}
 		"""
 
 rule kraken:
