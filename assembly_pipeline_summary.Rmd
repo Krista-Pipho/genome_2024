@@ -179,7 +179,7 @@ for (i in seq_along(busco_list_1)){
 }
 
 scaffold.pairs <- as_tibble(scaffold.pairs)
-scaffold.pairs
+kable(scaffold.pairs)
 
 # Creates a modified overlap matrix and plots the result
 x_adj = x
