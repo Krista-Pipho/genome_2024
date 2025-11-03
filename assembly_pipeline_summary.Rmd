@@ -1,5 +1,5 @@
 ---
-title: "Identifying H. m. rosina Scaffolds Using Hmel2.5"
+#title: "Identifying H. m. rosina Scaffolds Using Hmel2.5"
 author: "Krista Pipho"
 date: "`r Sys.Date()`"
 output: html_document
@@ -7,6 +7,7 @@ link-citations: true
 params:
     primary_genome: ""
     compare_genome: ""
+title: "Identifying `r params$primary_genome` scaffolds using `r params$compare_genome` as a reference"
 ---
 
 ```{r file_info, include=FALSE}
