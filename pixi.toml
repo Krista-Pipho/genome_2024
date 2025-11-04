@@ -8,18 +8,21 @@ version = "0.1.0"
 [tasks]
 
 [dependencies]
+python = ">=3.12.11,<3.13"
 snakemake = ">=9.10.0,<10"
+singularity = ">=3.8.6,<4"
+# Bioinformatics Tools
 genomescope2 = ">=2.0.1,<3"
 hifiasm = ">=0.25.0,<0.26"
 samtools = ">=1.22.1,<2"
-singularity = ">=3.8.6,<4"
 tidk = ">=0.2.65,<0.3"
+bioawk = ">=1.0,<2"
+# Permissions and Security 
 openssl = ">=3.5.2,<4"
-python = ">=3.12.11,<3.13"
 certifi = ">=2025.8.3,<2026"
 pip-system-certs = ">=5.2,<6"
 truststore = ">=0.10.3,<0.11"
-bioawk = ">=1.0,<2"
+# Visualization
 r = ">=4.4,<4.5"
 pandoc = ">=3.8.2,<4"
 r-rmarkdown = ">=2.30,<3"
@@ -27,3 +30,8 @@ r-tidyverse = ">=2.0.0,<3"
 r-kableextra = ">=1.4.0,<2"
 r-pheatmap = ">=1.0.13,<2"
 r-ggrepel = ">=0.9.6,<0.10"
+pysam = ">=0.23.3,<0.24"
+statsmodels = ">=0.14.5,<0.15"
+minimap2 = ">=2.30,<3"
+flye = ">=2.9.6,<3"
+oatk = ">=1.0,<2"
