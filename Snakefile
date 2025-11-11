@@ -12,12 +12,14 @@ busco_lineage = config["busco_lineage"]
 ### Conditional Operations
 filter_reads = config["filter_reads"]
 run_genomescope = config["run_genomescope"]
+assemble_mito = config["assemble_mito"]
 find_telomeres = config["find_telomeres"]
 generate_data_for_dotplot = config["generate_data_for_dotplot"]
 
 ### Values needed by conditional operations
 kraken_database = config["kraken_database"]
 tidk_lineage = config["tidk_lineage"]
+oatk_db = config["oatk_db"]
 
 
 all_targets = [
@@ -34,6 +36,9 @@ if filter_reads == True:
 
 if run_genomescope == True:
 	all_targets.append(expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples[0]))
+
+if assemble_mito == True:
+	all_targets.append(expand("results/{sample}/{sample}.mito.bed", sample=all_samples[0]))
 
 if find_telomeres == True:
 	all_targets.append(expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples))	
@@ -111,6 +116,18 @@ rule data_qc:
 		cp {output.genomescope} {output.genomescope_copy}
 		"""
 
+rule oatk:
+	input:
+		hifi_reads="{sample}.fastq"
+	output:
+		mito_assembly="results/{sample}/{sample}.mito.bed"
+	shell:
+		"""
+		pixi run oatk -t {cores} -m {oatk_db} -o analysis/{wildcards.sample}/{wildcards.sample} {wildcards.sample}.fastq
+		cp analysis/{wildcards.sample}/{wildcards.sample}.mito.bed results/{wildcards.sample}/{wildcards.sample}.mito.bed
+		cp analysis/{wildcards.sample}/{wildcards.sample}.mito.gfa results/{wildcards.sample}/{wildcards.sample}.mito.gfa
+		"""
+
 assembly_input = []
 if filter_reads == True:
 	assembly_input.append("results/{sample}/{sample}.report")
@@ -148,11 +165,11 @@ rule busco:
 		"""
 		# Use singularity docker to run BUSCO using the specific lineage entered at the top of this file
 		# BUSCO generates both a summary with percent of genes found, and a full output of each gene location
-		singularity exec -B $(pwd) docker://ezlabgva/busco:v6.0.0_cv1 busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
+		singularity exec -B $(pwd) docker://ezlabgva/busco:v5.5.0_cv1 busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
 
 		# Moves the BUSCO output to a location that snakemake can understand
-		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb12/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
-		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb12/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
 		"""
 
 rule dotplot:

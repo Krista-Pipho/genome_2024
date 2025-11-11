@@ -4,8 +4,10 @@ compare_assembly: "S288C_ref" # Assembly to compare against for dotplots
 cores: 30 # Number of cores, where required to specify 
 
 # Optional operations to perform
-filter_reads: True # Whether to filter reads with kraken2 before assembly
+filter_reads: False # Whether to filter reads with kraken2 before assembly
 run_genomescope: True # Whether to run genomescope2
+assemble_mito: True # Whether to run oatk to assemble the mitochondrial genome
+scaffold_with_ragtag: False # Whether to scaffold the assembly with ragtag using the compare_assembly as reference
 generate_data_for_dotplot: True # Whether to generate data for dotplots comparing assembly to a reference genome
 find_telomeres: False # Whether to run tidk to find telomeric repeats
 
@@ -16,3 +18,4 @@ find_telomeres: False # Whether to run tidk to find telomeric repeats
 kraken_database: "k2_standard_16_GB_20250714" # Name of the kraken2 database file
 busco_lineage: "saccharomycetes" # Find here https://busco.ezlab.org/list_of_lineages.html
 tidk_lineage: "NA" # Find here https://github.com/tolkit/a-telomeric-repeat-database
+oatk_db: "OatkDB/v20230921/dikarya_mito.fam" # Find here https://github.com/c-zhou/OatkDB/tree/main/v20230921
