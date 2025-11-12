@@ -123,6 +123,13 @@ rule oatk:
 		mito_assembly="results/{sample}/{sample}.mito.bed"
 	shell:
 		"""
+		oatk_db={oatk_db}
+
+		if [ ! -d "OatkDB" ]; then
+			echo "OatkDB  does not exist."		
+			git clone https://github.com/c-zhou/OatkDB.git
+		fi
+
 		pixi run oatk -t {cores} -m {oatk_db} -o analysis/{wildcards.sample}/{wildcards.sample} {wildcards.sample}.fastq
 		cp analysis/{wildcards.sample}/{wildcards.sample}.mito.bed results/{wildcards.sample}/{wildcards.sample}.mito.bed
 		cp analysis/{wildcards.sample}/{wildcards.sample}.mito.gfa results/{wildcards.sample}/{wildcards.sample}.mito.gfa
