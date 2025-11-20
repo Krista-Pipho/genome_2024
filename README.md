@@ -22,7 +22,7 @@ In detail, the pipeline accepts PacBio HiFi reads in FASTQ format as **input** a
 All users will require an instalation of Pixi, a package management alternative to Conda. Install using the command below. Read about pixi here: https://pixi.sh/dev/
 
 ```
-curl -fsSL https://pixi.sh/install.sh | sh
+wget -qO- https://pixi.sh/install.sh | sh
 ```
 
 <br>
