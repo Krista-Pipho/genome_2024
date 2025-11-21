@@ -172,11 +172,11 @@ rule busco:
 		"""
 		# Use singularity docker to run BUSCO using the specific lineage entered at the top of this file
 		# BUSCO generates both a summary with percent of genes found, and a full output of each gene location
-		singularity exec -B $(pwd) docker://ezlabgva/busco:v5.5.0_cv1 busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
+		singularity exec -B $(pwd) docker://ezlabgva/busco:v6.0.0_cv1 busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
 
 		# Moves the BUSCO output to a location that snakemake can understand
-		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
-		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb12/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb12/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
 		"""
 
 rule dotplot:
