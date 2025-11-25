@@ -66,7 +66,7 @@ First, change the 'sample' line to your dataset. The workflow excepts either raw
 If your data source gave you a .bam file of HiFi reads, convert it to the correct input for the pipeline using the code below
 
 ```
-samtools fastq sample.bam > sample.fastq
+pixi run samtools fastq sample.bam > sample.fastq
 ```
 
 compare_assembly:
