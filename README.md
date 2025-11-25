@@ -75,7 +75,7 @@ Many features require an additional assembly for comparasin. This can be either 
 
 Optional operations to perform:
 
-Many of the analysees in this workflow are optional, and require certain data or parameter inputs. If both the sample and comparasin genome are pre-assembled, be sure to dissable 'filter_reads'  and 'run_genomescope', as these require un-assembled long read data. Several of the options, if marked true, require corresponsing parameters below. Please read these requirements carefully and use the provided links to choose apropriate values. 
+Many of the analysees in this workflow are optional, and require certain data or parameter inputs. If both the sample and comparasin genome are pre-assembled, be sure to dissable 'filter_reads',  'assemble_mito' and 'run_genomescope', as these require un-assembled long read data. Several of the options, if marked true, require corresponsing parameters below. Please read these requirements carefully and use the provided links to choose apropriate values. 
 
 Once your config.yaml is customized, test that it is configured properly using the command below. This should quickly produce green and yellow reports about the workflow. Errors will appear in red. The most common cause of errors is a missmatch between the provided data and the sample names in the config.yaml. If you see only green and yellow text using the above command you can run the actual analysis. Do so using the command below. 
 
