@@ -8,15 +8,12 @@ assembly = config["sample"]
 cores = config["cores"]
 rule all:
     input:
-        expand("analysis/{assembly}/masking/{assembly}.gfa.masked", assembly=assembly),
-        expand("analysis/{assembly}/masking/{assembly}.gfa.out.gff", assembly=assembly),
         expand("analysis/{assembly}/masking/{assembly}_masked.bedtools", assembly=assembly)
 
 rule repeat_modeling:
     input:
         "{assembly}.gfa"
     output:
-        "analysis/{assembly}/masking/{assembly}.gfa",
         "analysis/{assembly}/masking/consensi.fa.classified"
     shell:
         """
@@ -33,9 +30,7 @@ rule repeat_modeling:
 rule repeat_masking:
     input:
         library="analysis/{assembly}/masking/consensi.fa.classified",
-        gfa="analysis/{assembly}/masking/{assembly}.gfa"
     output:
-        masked="analysis/{assembly}/masking/{assembly}.gfa.masked",
         gff="analysis/{assembly}/masking/{assembly}.gfa.out.gff", 
         masked_result="results/{assembly}/{assembly}_masked.fasta"
     shell:
@@ -48,7 +43,6 @@ rule repeat_masking:
 
 rule masking_summary:
     input:
-        masked="analysis/{assembly}/masking/{assembly}.gfa.masked",
         gff="analysis/{assembly}/masking/{assembly}.gfa.out.gff"
     output:
         "analysis/{assembly}/masking/{assembly}_masked.bedtools"

@@ -21,13 +21,15 @@ kraken_database = config["kraken_database"]
 tidk_lineage = config["tidk_lineage"]
 oatk_db = config["oatk_db"]
 
+include: "masking.smk"
+
 
 all_targets = [
 		#expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
 		#expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
 		#expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
 		#expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
-		expand("analysis/{sample}/masking/{sample}.gfa.masked", sample=all_samples), #masking
+		expand("analysis/{sample}/masking/{sample}_masked.bedtools", sample=all_samples), #masking
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
 		expand("{primary_assembly}_{compare_assembly}_assembly_summary.html", primary_assembly=all_samples[0], compare_assembly=all_samples[1]) # generate final summary html report
 ]
@@ -173,11 +175,11 @@ rule busco:
 		"""
 		# Use singularity docker to run BUSCO using the specific lineage entered at the top of this file
 		# BUSCO generates both a summary with percent of genes found, and a full output of each gene location
-		singularity exec -B $(pwd) docker://ezlabgva/busco:v6.0.0_cv1 busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
+		singularity exec -B $(pwd) docker://ezlabgva/busco:v5.5.0_cv1 busco -i {input.assembly} -f --cpu {cores} -l {busco_lineage} -o analysis/{wildcards.sample}/busco_{wildcards.sample} -m geno
 
 		# Moves the BUSCO output to a location that snakemake can understand
-		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb12/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
-		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb12/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/short_summary.txt analysis/{wildcards.sample}/busco_{wildcards.sample}/short_summary.txt
+		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
 		"""
 
 rule dotplot:
@@ -216,19 +218,19 @@ rule quast:
 		# Run quast 
 		singularity exec -B $(pwd) docker://nanozoo/quast quast -o analysis/{wildcards.sample}/quast_{wildcards.sample} {input.assembly}
 		"""
-		
-rule masking:
-	input:
-		assembly="{sample}.gfa"
-	output:
-		masked_assembly="analysis/{sample}/masking/{sample}.gfa.masked",
-		masking_gff="analysis/{sample}/masking/{sample}.gfa.out.gff",
-		masking_summary="analysis/{sample}/masking/{sample}_masked.bedtools",
-	shell:
-		"""
-		pixi run snakemake -s masking.smk 
-		cp {output.masked_assembly} results/{wildcards.sample}/{wildcards.sample}_masked.gfa
-		"""
+
+#rule masking:
+#	input:
+#		assembly="{sample}.gfa"
+#	output:
+#		masked_assembly="analysis/{sample}/masking/{sample}.gfa.masked",
+#		masking_gff="analysis/{sample}/masking/{sample}.gfa.out.gff",
+#		masking_summary="analysis/{sample}/masking/{sample}_masked.bedtools",
+#	shell:
+#		"""
+#		pixi run snakemake -s masking.smk -c {cores} 
+#		cp {output.masked_assembly} results/{wildcards.sample}/{wildcards.sample}_masked.gfa
+#		"""
 
 rule clean_results:
 	input: 
