@@ -27,6 +27,7 @@ all_targets = [
 		#expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
 		#expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
 		#expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
+		expand("analysis/{sample}/masking/{sample}.gfa.masked", sample=all_samples), #masking
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
 		expand("{primary_assembly}_{compare_assembly}_assembly_summary.html", primary_assembly=all_samples[0], compare_assembly=all_samples[1]) # generate final summary html report
 ]
@@ -214,6 +215,19 @@ rule quast:
 		"""
 		# Run quast 
 		singularity exec -B $(pwd) docker://nanozoo/quast quast -o analysis/{wildcards.sample}/quast_{wildcards.sample} {input.assembly}
+		"""
+		
+rule masking:
+	input:
+		assembly="{sample}.gfa"
+	output:
+		masked_assembly="analysis/{sample}/masking/{sample}.gfa.masked",
+		masking_gff="analysis/{sample}/masking/{sample}.gfa.out.gff",
+		masking_summary="analysis/{sample}/masking/{sample}_masked.bedtools",
+	shell:
+		"""
+		pixi run snakemake -s masking.smk 
+		cp {output.masked_assembly} results/{wildcards.sample}/{wildcards.sample}_masked.gfa
 		"""
 
 rule clean_results:

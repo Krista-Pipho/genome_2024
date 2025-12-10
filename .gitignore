@@ -13,3 +13,5 @@ slurm*
 .RData
 .Rhistory
 .gitmodules
+*.fasta*
+*.gfa*
