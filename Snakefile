@@ -21,8 +21,6 @@ kraken_database = config["kraken_database"]
 tidk_lineage = config["tidk_lineage"]
 oatk_db = config["oatk_db"]
 
-include: "masking.smk"
-
 
 all_targets = [
 		#expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
@@ -219,18 +217,45 @@ rule quast:
 		singularity exec -B $(pwd) docker://nanozoo/quast quast -o analysis/{wildcards.sample}/quast_{wildcards.sample} {input.assembly}
 		"""
 
-#rule masking:
-#	input:
-#		assembly="{sample}.gfa"
-#	output:
-#		masked_assembly="analysis/{sample}/masking/{sample}.gfa.masked",
-#		masking_gff="analysis/{sample}/masking/{sample}.gfa.out.gff",
-#		masking_summary="analysis/{sample}/masking/{sample}_masked.bedtools",
-#	shell:
-#		"""
-#		pixi run snakemake -s masking.smk -c {cores} 
-#		cp {output.masked_assembly} results/{wildcards.sample}/{wildcards.sample}_masked.gfa
-#		"""
+rule repeat_modeling:
+    input:
+        assembly="{sample}.gfa"
+    output:
+        "analysis/{sample}/masking/consensi.fa.classified"
+    shell:
+        """
+        if [ ! -d "analysis/{wildcards.sample}/masking" ]; then		
+			mkdir analysis/{wildcards.sample}/masking
+        fi
+        
+        pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest BuildDatabase -name analysis/{wildcards.sample}/masking/{wildcards.sample}_masking {wildcards.sample}.gfa 
+        pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest RepeatModeler -database analysis/{wildcards.sample}/masking/{wildcards.sample}_masking -engine ncbi -threads 60 -quick -dir analysis/{wildcards.sample}/masking/
+        """
+
+rule repeat_masking:
+    input:
+        library="analysis/{sample}/masking/consensi.fa.classified",
+    output:
+        gff="analysis/{sample}/masking/{sample}.gfa.out.gff", 
+        masked_result="results/{sample}/{sample}_masked.fasta"
+    shell:
+        """
+        pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest RepeatMasker -pa 60 -gff -lib analysis/{wildcards.sample}/masking/consensi.fa.classified -dir analysis/{wildcards.sample}/masking/ {wildcards.sample}.gfa
+        cp analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked results/{wildcards.sample}/{wildcards.sample}_masked.fasta
+        """
+
+rule masking_summary:
+    input:
+        gff="analysis/{sample}/masking/{sample}.gfa.out.gff"
+    output:
+        "analysis/{sample}/masking/{sample}_masked.bedtools"
+    shell:
+        """
+        samtools faidx analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked
+        awk -v OFS='\t' {{'print $1,$2'}} analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked.fai > analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked.bedtools
+        pixi run bedtools summary -i analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.out.gff -g analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked.bedtools > analysis/{wildcards.sample}/masking/{wildcards.sample}_masked.bedtools
+        cp analysis/{wildcards.sample}/masking/{wildcards.sample}_masked.bedtools results/{wildcards.sample}/{wildcards.sample}_masked.bedtools
+        """
 
 rule clean_results:
 	input: 
