@@ -35,7 +35,7 @@ all_targets = [
 
 ### Optional Steps output file logic (Appended to all_targets)
 if filter_reads == True:
-	all_targets.append(expand("results/{sample}/{sample}_filtering.report", sample=all_samples[0]))
+	all_targets.append(expand("results/{sample}/{sample}.filtering.report", sample=all_samples[0]))
 
 if run_genomescope == True:
 	all_targets.append(expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples[0]))
@@ -47,8 +47,8 @@ if find_telomeres == True:
 	all_targets.append(expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples))	
 
 if generate_data_for_dotplot == True:
-	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}_dotplot.coords", sample=all_samples[0], compare_assembly=all_samples[1]))
-	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}_dotplot.coords.idx", sample=all_samples[0], compare_assembly=all_samples[1]))
+	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}.coords", sample=all_samples[0], compare_assembly=all_samples[1]))
+	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}.coords.idx", sample=all_samples[0], compare_assembly=all_samples[1]))
 
 if repeat_masking == True:
 	all_targets.append(expand("results/{sample}/{sample}_masked.fasta", sample=all_samples[0]))
@@ -74,7 +74,7 @@ rule kraken:
 	output:
 		unfiltered="analysis/{sample}/{sample}_unfiltered.fastq", # Reads not assigned to taxa in contaminant database kept
 		contaminants="analysis/{sample}/{sample}_classified.fq", # Reads assigned to taxa in contaminant database removed
-		report="results/{sample}/{sample}_filtering.report",
+		report="results/{sample}/{sample}.filtering.report",
 	shell:
 		"""
 		kraken_db={kraken_database}
@@ -103,7 +103,7 @@ rule kraken:
 # If filter_reads is selected, completion of the kraken rule is required before data_qc
 qc_input = []
 if filter_reads == True:
-	qc_input.append("results/{sample}/{sample}_filtering.report")
+	qc_input.append("results/{sample}/{sample}.filtering.report")
 
 # If run_genomescope is selected, model read quality and genome characteristics using genomescope2
 rule data_qc:
@@ -150,7 +150,7 @@ rule oatk:
 # If filter_reads is selected, completion of the kraken rule is required before assembly
 assembly_input = []
 if filter_reads == True:
-	assembly_input.append("results/{sample}/{sample}_filtering.report")
+	assembly_input.append("results/{sample}/{sample}.filtering.report")
 
 # Genome assembly using hifiasm
 rule assembly:
@@ -208,8 +208,8 @@ rule dotplot:
 		"""
 		singularity exec -B $(pwd) docker://staphb/mummer:4.0.1 nucmer {input.assembly} {input.compare_assembly} -p analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}
 		python bin/DotPrep.py --out analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly} --delta analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.delta
-		cp analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.coords results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}_dotplot.coords
-		cp analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.coords.idx results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}_dotplot.coords.idx
+		cp analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.coords results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.coords
+		cp analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.coords.idx results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.coords.idx
 		# To visualize the dotplot, upload the .coords and .coords.idx files to the website below
 		# https://dot.sandbox.bio/
 		"""

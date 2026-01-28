@@ -1,4 +1,6 @@
-
+# If the sample name matches an entry in the SRA database input files will be downloaded automatically
+# Alternatively you can provide input reads by placing them in a file named sample.fastq in the main directory
+# If you instead provide an assembled genome named sample.gfa in the main directory the assembly step will be skipped
 sample: "SRR13577847" # Sample name, used for naming input and output files
 compare_assembly: "S288C_ref" # Assembly to compare against for dotplots
 cores: 30 # Number of cores, where required to specify 
@@ -10,7 +12,7 @@ run_genomescope: True # Whether to run genomescope2
 assemble_mito: False # Whether to run oatk to assemble the mitochondrial genome
 generate_data_for_dotplot: True # Whether to generate data for dotplots comparing assembly to a reference genome. View dotplots at https://dot.sandbox.bio/
 find_telomeres: False # Whether to run tidk to find telomeric repeats
-repeat_masking: False # Whether to run repeatmasker to generate a masked refference genome
+repeat_masking: true # Whether to run repeatmasker to generate a masked reference genome
 # If you would like to provide a repeat library for masking place the file at sample_consensi.fa in the main directory. 
 # If no file is provided one will be generated from your genome using RepeatModeler. This process takes a very long time to run. 
 
