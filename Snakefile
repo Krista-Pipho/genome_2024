@@ -241,30 +241,36 @@ rule quast:
 # If repeat_masking is selected and no consensi file is provided, generate a library of repetative sequences using RepeatModeler
 rule repeat_modeling:
     input:
-        assembly="{sample}.gfa"
+        assembly=ancient("{sample}.gfa")
     output:
-        "analysis/{sample}/masking/consensi.fa.classified"
+        library="{sample}_consensi.fa.classified"
     shell:
         """
-        if [ ! -d "analysis/{wildcards.sample}/masking" ]; then		
+		echo 'No repeat library found, generating repeat library with RepeatModeler. This may take a long time to run.'
+
+		# Ensures the masking directory exists and is empty before running RepeatModeler, preventing errors
+        if [ -d "analysis/{wildcards.sample}/masking" ]; then
+			rm -r analysis/{wildcards.sample}/masking/*
+		else		
 			mkdir analysis/{wildcards.sample}/masking
         fi
         
         pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest BuildDatabase -name analysis/{wildcards.sample}/masking/{wildcards.sample}_masking {wildcards.sample}.gfa 
         pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest RepeatModeler -database analysis/{wildcards.sample}/masking/{wildcards.sample}_masking -engine ncbi -threads 60 -quick -dir analysis/{wildcards.sample}/masking/
+		cp analysis/{wildcards.sample}/masking/consensi.fa.classified {output.library}
         """
 
 # If repeat_masking is selected, use a repeat library consensi file to mask the assembly using RepeatMasker
 rule repeat_masking:
     input:
-        library="analysis/{sample}/masking/consensi.fa.classified",
+        library="{sample}_consensi.fa.classified"
     output:
         gff="analysis/{sample}/masking/{sample}.gfa.out.gff", 
         masked_result="results/{sample}/{sample}_masked.fasta"
     shell:
         """
         pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest RepeatMasker -pa 60 -gff -lib analysis/{wildcards.sample}/masking/consensi.fa.classified -dir analysis/{wildcards.sample}/masking/ {wildcards.sample}.gfa
-        cp analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked results/{wildcards.sample}/{wildcards.sample}_masked.fasta
+        cp analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked {output.masked_result}
         """
 
 # If repeat_masking is selected, generate a summary of masked regions using bedtools
