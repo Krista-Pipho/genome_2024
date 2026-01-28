@@ -1,39 +1,41 @@
+### Import Statements
 import os
 import certifi
 os.environ['SSL_CERT_FILE'] = certifi.where()
 
 configfile: "config.yaml"
 
+### Config Variables needed by required steps
 all_samples = [config["sample"], config["compare_assembly"]]
 cores = config["cores"]
 busco_lineage = config["busco_lineage"]
 
-
-### Conditional Operations
+### Optional Steps selected in config file
 filter_reads = config["filter_reads"]
 run_genomescope = config["run_genomescope"]
 assemble_mito = config["assemble_mito"]
 find_telomeres = config["find_telomeres"]
 generate_data_for_dotplot = config["generate_data_for_dotplot"]
+repeat_masking = config["repeat_masking"]
 
-### Values needed by conditional operations
+### Config Variables needed by optional steps
 kraken_database = config["kraken_database"]
 tidk_lineage = config["tidk_lineage"]
 oatk_db = config["oatk_db"]
 
-
+### Final output file for required steps
 all_targets = [
 		#expand("analysis/{sample}/{sample}.p_ctg.fa", sample=all_samples), #assembly
 		#expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
 		#expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
 		#expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
-		expand("analysis/{sample}/masking/{sample}_masked.bedtools", sample=all_samples), #masking
 		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
 		expand("{primary_assembly}_{compare_assembly}_assembly_summary.html", primary_assembly=all_samples[0], compare_assembly=all_samples[1]) # generate final summary html report
 ]
 
+### Optional Steps output file logic (Appended to all_targets)
 if filter_reads == True:
-	all_targets.append(expand("results/{sample}/{sample}.report", sample=all_samples[0]))
+	all_targets.append(expand("results/{sample}/{sample}_filtering.report", sample=all_samples[0]))
 
 if run_genomescope == True:
 	all_targets.append(expand("analysis/{sample}/genomescope_{sample}/linear_plot.png", sample=all_samples[0]))
@@ -45,13 +47,18 @@ if find_telomeres == True:
 	all_targets.append(expand("analysis/{sample}/tidk_{sample}.svg", sample=all_samples))	
 
 if generate_data_for_dotplot == True:
-	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}.coords", sample=all_samples[0], compare_assembly=all_samples[1]))
-	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}.coords", sample=all_samples[1], compare_assembly=all_samples[0]))
+	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}_dotplot.coords", sample=all_samples[0], compare_assembly=all_samples[1]))
+	all_targets.append(expand("results/{sample}/{sample}_{compare_assembly}_dotplot.coords.idx", sample=all_samples[0], compare_assembly=all_samples[1]))
+
+if repeat_masking == True:
+	all_targets.append(expand("results/{sample}/{sample}_masked.fasta", sample=all_samples[0]))
+	all_targets.append(expand("results/{sample}/{sample}_masked.bedtools", sample=all_samples[0]))
 
 rule targets:
 	input:		
 		all_targets
 
+# Download reads from SRA using fasterq-dump
 rule download_reads:
 	output:
 		"{sample}.fastq"
@@ -60,13 +67,14 @@ rule download_reads:
 		singularity exec -B $(pwd) docker://ncbi/sra-tools fasterq-dump {wildcards.sample}
 		"""
 
+# If filter_reads is selected, removes comtaminating reads using kraken2
 rule kraken:
 	input: 
 		reads="{sample}.fastq"
 	output:
-		unfiltered="analysis/{sample}/{sample}_unfiltered.fastq",
-		contaminants="analysis/{sample}/{sample}_classified.fq",
-		report="results/{sample}/{sample}.report",
+		unfiltered="analysis/{sample}/{sample}_unfiltered.fastq", # Reads not assigned to taxa in contaminant database kept
+		contaminants="analysis/{sample}/{sample}_classified.fq", # Reads assigned to taxa in contaminant database removed
+		report="results/{sample}/{sample}_filtering.report",
 	shell:
 		"""
 		kraken_db={kraken_database}
@@ -92,10 +100,12 @@ rule kraken:
 		mv analysis/{wildcards.sample}/unclassified_{wildcards.sample}.fq {wildcards.sample}.fastq 
 		"""
 
+# If filter_reads is selected, completion of the kraken rule is required before data_qc
 qc_input = []
 if filter_reads == True:
-	qc_input.append("results/{sample}/{sample}.report")
+	qc_input.append("results/{sample}/{sample}_filtering.report")
 
+# If run_genomescope is selected, model read quality and genome characteristics using genomescope2
 rule data_qc:
 	input:
 		hifi_reads="{sample}.fastq", 
@@ -117,6 +127,7 @@ rule data_qc:
 		cp {output.genomescope} {output.genomescope_copy}
 		"""
 
+# If assemble_mito is selected, assembly of mitochondrial genome is run using oatk
 rule oatk:
 	input:
 		hifi_reads="{sample}.fastq"
@@ -136,9 +147,12 @@ rule oatk:
 		cp analysis/{wildcards.sample}/{wildcards.sample}.mito.gfa results/{wildcards.sample}/{wildcards.sample}.mito.gfa
 		"""
 
+# If filter_reads is selected, completion of the kraken rule is required before assembly
 assembly_input = []
 if filter_reads == True:
-	assembly_input.append("results/{sample}/{sample}.report")
+	assembly_input.append("results/{sample}/{sample}_filtering.report")
+
+# Genome assembly using hifiasm
 rule assembly:
 	input:
 		hifi_reads="{sample}.fastq",
@@ -148,10 +162,11 @@ rule assembly:
 		assembly="{sample}.gfa"
 	shell:
 		"""
-		# To see or change details of the assembly, open assembly.sh
+		# To see or change details of the assembly, open bin/assembly.sh
 		bash bin/assembly.sh {wildcards.sample} {input.hifi_reads} {cores}
 		"""
 
+# Index the assembled genome using samtools faidx
 rule index:
 	input:
 		assembly="{sample}.gfa"
@@ -163,6 +178,7 @@ rule index:
 		samtools faidx --fai-idx analysis/{wildcards.sample}/{input.assembly}.fai {input.assembly}
 		"""
 
+# Assess genome completeness using BUSCO
 rule busco:
 	input:
 		assembly="{sample}.gfa"
@@ -180,6 +196,7 @@ rule busco:
 		cp analysis/{wildcards.sample}/busco_{wildcards.sample}/run_{busco_lineage}_odb10/full_table.tsv  analysis/{wildcards.sample}/busco_{wildcards.sample}/full_table.tsv
 		"""
 
+# If generate_data_for_dotplot is selected, prepare sample x compare_assembly whole genome alignment data using MUMmer
 rule dotplot:
 	input:
 		assembly="{sample}.gfa",
@@ -190,11 +207,14 @@ rule dotplot:
 	shell:
 		"""
 		singularity exec -B $(pwd) docker://staphb/mummer:4.0.1 nucmer {input.assembly} {input.compare_assembly} -p analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}
-		python bin/DotPrep.py --out results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly} --delta analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.delta
-		# To visualize the dotplot, upload the .coords file to the website below
+		python bin/DotPrep.py --out analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly} --delta analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.delta
+		cp analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.coords results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}_dotplot.coords
+		cp analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}.coords.idx results/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}_dotplot.coords.idx
+		# To visualize the dotplot, upload the .coords and .coords.idx files to the website below
 		# https://dot.sandbox.bio/
 		"""
 
+# If find_telomeres is selected, identify telomeric repeats using tidk
 rule telo:
 	input:
 		assembly="{sample}.gfa"
@@ -206,6 +226,7 @@ rule telo:
 		bash bin/telomere.sh {wildcards.sample} {input.assembly} {tidk_lineage}
 		"""
 
+# Assess assembly contiguity using QUAST
 rule quast:
 	input:
 		assembly="{sample}.gfa"
@@ -217,6 +238,7 @@ rule quast:
 		singularity exec -B $(pwd) docker://nanozoo/quast quast -o analysis/{wildcards.sample}/quast_{wildcards.sample} {input.assembly}
 		"""
 
+# If repeat_masking is selected and no consensi file is provided, generate a library of repetative sequences using RepeatModeler
 rule repeat_modeling:
     input:
         assembly="{sample}.gfa"
@@ -232,6 +254,7 @@ rule repeat_modeling:
         pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest RepeatModeler -database analysis/{wildcards.sample}/masking/{wildcards.sample}_masking -engine ncbi -threads 60 -quick -dir analysis/{wildcards.sample}/masking/
         """
 
+# If repeat_masking is selected, use a repeat library consensi file to mask the assembly using RepeatMasker
 rule repeat_masking:
     input:
         library="analysis/{sample}/masking/consensi.fa.classified",
@@ -244,11 +267,12 @@ rule repeat_masking:
         cp analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked results/{wildcards.sample}/{wildcards.sample}_masked.fasta
         """
 
+# If repeat_masking is selected, generate a summary of masked regions using bedtools
 rule masking_summary:
     input:
         gff="analysis/{sample}/masking/{sample}.gfa.out.gff"
     output:
-        "analysis/{sample}/masking/{sample}_masked.bedtools"
+        "results/{sample}/{sample}_masked.bedtools"
     shell:
         """
         samtools faidx analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked
@@ -257,6 +281,8 @@ rule masking_summary:
         cp analysis/{wildcards.sample}/masking/{wildcards.sample}_masked.bedtools results/{wildcards.sample}/{wildcards.sample}_masked.bedtools
         """
 
+# Use custom code found in bin/summarize.sh to clean and summarize workflow outputs for downstream visualization
+# Cleaned results are aggregated and stored in the results/sample folder (These can be accessed even if summary rendering fails)
 rule clean_results:
 	input: 
 		index="analysis/{sample}/{sample}.gfa.fai",
@@ -278,6 +304,7 @@ rule clean_results:
 		bash bin/summarize.sh {wildcards.sample} {input.report} {output.quast_report} {input.summary} {input.full} {output.busco_summary} {output.busco_full}
 		"""
 
+# Generate visual final summary report in html format using Rmarkdown
 rule render_summary_rmd:
 	input:
 		primary_summary = expand("results/{sample}/{sample}_full_busco_table.txt", sample=all_samples[0]),
