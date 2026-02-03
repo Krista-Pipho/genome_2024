@@ -4,6 +4,7 @@ import certifi
 os.environ['SSL_CERT_FILE'] = certifi.where()
 
 configfile: "config.yaml"
+report: "report/assembly_pipeline_report.rst"
 
 ### Config Variables needed by required steps
 all_samples = [config["sample"], config["compare_assembly"]]
@@ -17,6 +18,7 @@ assemble_mito = config["assemble_mito"]
 find_telomeres = config["find_telomeres"]
 generate_data_for_dotplot = config["generate_data_for_dotplot"]
 repeat_masking = config["repeat_masking"]
+benchmarking = config["benchmarking"]
 
 ### Config Variables needed by optional steps
 kraken_database = config["kraken_database"]
@@ -29,7 +31,7 @@ all_targets = [
 		#expand("analysis/{sample}/{sample}.p_ctg.fa.fai", sample=all_samples), #indexing
 		#expand("analysis/{sample}/busco_{sample}/short_summary.txt", sample=all_samples, busco_lineage=busco_lineage), #busco
 		#expand("analysis/{sample}/quast_{sample}/report.txt", sample=all_samples), #quast
-		expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
+		#expand("results/{sample}/{sample}_busco_table.txt", sample=all_samples), # make results summary
 		expand("{primary_assembly}_{compare_assembly}_assembly_summary.html", primary_assembly=all_samples[0], compare_assembly=all_samples[1]) # generate final summary html report
 ]
 
@@ -54,6 +56,9 @@ if repeat_masking == True:
 	all_targets.append(expand("results/{sample}/{sample}_masked.fasta", sample=all_samples[0]))
 	all_targets.append(expand("results/{sample}/{sample}_masked.bedtools", sample=all_samples[0]))
 
+if benchmarking == True:
+	all_targets.append(expand("results/{sample}/complete_benchmark.txt", sample=all_samples[0]))
+
 rule targets:
 	input:		
 		all_targets
@@ -62,6 +67,8 @@ rule targets:
 rule download_reads:
 	output:
 		"{sample}.fastq"
+	benchmark:
+		"results/{sample}/benchmark/download_{sample}.txt"
 	shell:
 		"""
 		singularity exec -B $(pwd) docker://ncbi/sra-tools fasterq-dump {wildcards.sample}
@@ -74,7 +81,9 @@ rule kraken:
 	output:
 		unfiltered="analysis/{sample}/{sample}_unfiltered.fastq", # Reads not assigned to taxa in contaminant database kept
 		contaminants="analysis/{sample}/{sample}_classified.fq", # Reads assigned to taxa in contaminant database removed
-		report="results/{sample}/{sample}.filtering.report",
+		report=report("results/{sample}/{sample}.filtering.report"),
+	benchmark:
+		"results/{sample}/benchmark/kraken_{sample}.txt"
 	shell:
 		"""
 		kraken_db={kraken_database}
@@ -112,7 +121,9 @@ rule data_qc:
 		optional_input=qc_input
 	output:
 		genomescope="analysis/{sample}/genomescope_{sample}/linear_plot.png",
-		genomescope_copy="results/{sample}/{sample}_genomescope.png" 
+		genomescope_copy=report("results/{sample}/{sample}_genomescope.png") 
+	benchmark:
+		"results/{sample}/benchmark/genomescope_{sample}.txt"
 	shell:
 		"""
 		# Make intermediate files for genomescope analysis using Jellyfish
@@ -132,7 +143,9 @@ rule oatk:
 	input:
 		hifi_reads="{sample}.fastq"
 	output:
-		mito_assembly="results/{sample}/{sample}.mito.bed"
+		mito_assembly=report("results/{sample}/{sample}.mito.bed")
+	benchmark:
+		"results/{sample}/benchmark/oatk_{sample}.txt"
 	shell:
 		"""
 		oatk_db={oatk_db}
@@ -160,6 +173,8 @@ rule assembly:
 	output:
 		hifiasm_output="analysis/{sample}/{sample}.bp.p_ctg.gfa",
 		assembly="{sample}.gfa"
+	benchmark:
+		"results/{sample}/benchmark/assembly_{sample}.txt"
 	shell:
 		"""
 		# To see or change details of the assembly, open bin/assembly.sh
@@ -171,7 +186,9 @@ rule index:
 	input:
 		assembly="{sample}.gfa"
 	output:
-		index="analysis/{sample}/{sample}.gfa.fai"
+		index=report("analysis/{sample}/{sample}.gfa.fai")
+	benchmark:
+		"results/{sample}/benchmark/index_{sample}.txt"
 	shell:
 		"""
 		# Index the newly assembled genome
@@ -183,8 +200,10 @@ rule busco:
 	input:
 		assembly="{sample}.gfa"
 	output:
-		summary="analysis/{sample}/busco_{sample}/short_summary.txt",
-		full="analysis/{sample}/busco_{sample}/full_table.tsv",
+		summary=report("analysis/{sample}/busco_{sample}/short_summary.txt"),
+		full=report("analysis/{sample}/busco_{sample}/full_table.tsv"),
+	benchmark:
+		"results/{sample}/benchmark/busco_{sample}.txt"
 	shell:
 		"""
 		# Use singularity docker to run BUSCO using the specific lineage entered at the top of this file
@@ -204,6 +223,8 @@ rule dotplot:
 	output:
 		"results/{sample}/{sample}_{compare_assembly}.coords",
 		"results/{sample}/{sample}_{compare_assembly}.coords.idx"
+	benchmark:
+		"results/{sample}/benchmark/dotplot_{sample}_{compare_assembly}.txt"
 	shell:
 		"""
 		singularity exec -B $(pwd) docker://staphb/mummer:4.0.1 nucmer {input.assembly} {input.compare_assembly} -p analysis/{wildcards.sample}/{wildcards.sample}_{wildcards.compare_assembly}
@@ -219,7 +240,9 @@ rule telo:
 	input:
 		assembly="{sample}.gfa"
 	output:
-		"analysis/{sample}/tidk_{sample}.svg"
+		telomeres=report("analysis/{sample}/tidk_{sample}.svg")
+	benchmark:
+		"results/{sample}/benchmark/telo_{sample}.txt"
 	shell:
 		"""
 		# To see or change details of telomere finding, open telomere.sh
@@ -231,7 +254,9 @@ rule quast:
 	input:
 		assembly="{sample}.gfa"
 	output:
-		report="analysis/{sample}/quast_{sample}/report.txt"
+		report=report("analysis/{sample}/quast_{sample}/report.txt")
+	benchmark:
+		"results/{sample}/benchmark/quast_{sample}.txt"
 	shell:
 		"""
 		# Run quast 
@@ -244,6 +269,8 @@ rule repeat_modeling:
         assembly=ancient("{sample}.gfa")
     output:
         library="{sample}_consensi.fa.classified"
+    benchmark:
+        "results/{sample}/benchmark/repeat_modeling_{sample}.txt"
     shell:
         """
 		echo 'No repeat library found, generating repeat library with RepeatModeler. This may take a long time to run.'
@@ -262,23 +289,27 @@ rule repeat_modeling:
 
 # If repeat_masking is selected, use a repeat library consensi file to mask the assembly using RepeatMasker
 rule repeat_masking:
-    input:
-        library="{sample}_consensi.fa.classified"
-    output:
-        gff="analysis/{sample}/masking/{sample}.gfa.out.gff", 
-        masked_result="results/{sample}/{sample}_masked.fasta"
-    shell:
-        """
-        pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest RepeatMasker -pa 60 -gff -lib analysis/{wildcards.sample}/masking/consensi.fa.classified -dir analysis/{wildcards.sample}/masking/ {wildcards.sample}.gfa
-        cp analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked {output.masked_result}
-        """
+	input:
+		library="{sample}_consensi.fa.classified"
+	output:
+		gff="analysis/{sample}/masking/{sample}.gfa.out.gff", 
+		masked_result="results/{sample}/{sample}_masked.fasta"
+	benchmark:	
+		"results/{sample}/benchmark/repeat_masking_{sample}.txt"
+	shell:
+		"""
+		pixi run singularity exec -B $(pwd) docker://dfam/tetools:latest RepeatMasker -pa 60 -gff -lib analysis/{wildcards.sample}/masking/consensi.fa.classified -dir analysis/{wildcards.sample}/masking/ {wildcards.sample}.gfa
+		cp analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked {output.masked_result}
+		"""
 
 # If repeat_masking is selected, generate a summary of masked regions using bedtools
 rule masking_summary:
     input:
         gff="analysis/{sample}/masking/{sample}.gfa.out.gff"
     output:
-        "results/{sample}/{sample}_masked.bedtools"
+        report=report("results/{sample}/{sample}_masked.bedtools")
+    benchmark:
+        "results/{sample}/benchmark/masking_summary_{sample}.txt"
     shell:
         """
         samtools faidx analysis/{wildcards.sample}/masking/{wildcards.sample}.gfa.masked
@@ -300,6 +331,8 @@ rule clean_results:
 		quast_report="results/{sample}/{sample}_quast_table.txt",
 		busco_summary="results/{sample}/{sample}_busco_table.txt",
 		busco_full="results/{sample}/{sample}_full_busco_table.txt",
+	benchmark:
+		"results/{sample}/benchmark/clean_results_{sample}.txt"
 	shell:
 		"""
 		# Because the index has information about scaffold number and size this file is copied to the results folder 
@@ -316,9 +349,26 @@ rule render_summary_rmd:
 		primary_summary = expand("results/{sample}/{sample}_full_busco_table.txt", sample=all_samples[0]),
 		compare_summary = expand("results/{sample}/{sample}_full_busco_table.txt", sample=all_samples[1])
 	output:
-		summary=expand("{primary_assembly}_{compare_assembly}_assembly_summary.html", primary_assembly=all_samples[0], compare_assembly=all_samples[1])
+		summary=report(expand("{primary_assembly}_{compare_assembly}_assembly_summary.html", primary_assembly=all_samples[0], compare_assembly=all_samples[1]))
+	benchmark:
+		"results/{all_samples[0]}/benchmark/{all_samples[0]}_{all_samples[1]}_render_summary.txt"
 	shell:
 		"""
 		pixi run Rscript -e "rmarkdown::render('assembly_pipeline_summary.Rmd', output_file='{output.summary}', param=list(primary_genome='{all_samples[0]}',compare_genome='{all_samples[1]}'))"
 		"""
 
+rule benchmark:
+	input:
+		"results/{sample}/benchmark/busco_{sample}.txt",
+		"results/{sample}/benchmark/quast_{sample}.txt",
+		"results/{sample}/benchmark/clean_results_{sample}.txt",
+	output:
+		report=report("results/{sample}/complete_benchmark.txt")
+	shell:
+		"""
+		echo file_names > results/{wildcards.sample}/benchmark/names
+		head -n 1 results/{wildcards.sample}/benchmark/busco_{wildcards.sample}.txt > results/{wildcards.sample}/benchmark/output
+		for file in results/{wildcards.sample}/benchmark/*.txt; do echo $file >> results/{wildcards.sample}/benchmark/names; tail -n 1 $file >> results/{wildcards.sample}/benchmark/output; done
+		paste results/{wildcards.sample}/benchmark/names results/{wildcards.sample}/benchmark/output > results/{wildcards.sample}/complete_benchmark.txt
+
+		"""

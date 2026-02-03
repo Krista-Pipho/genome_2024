@@ -10,11 +10,12 @@ cores: 30 # Number of cores, where required to specify
 filter_reads: False # Whether to filter reads with kraken2 before assembly
 run_genomescope: True # Whether to run genomescope2
 assemble_mito: False # Whether to run oatk to assemble the mitochondrial genome
-generate_data_for_dotplot: True # Whether to generate data for dotplots comparing assembly to a reference genome. View dotplots at https://dot.sandbox.bio/
+generate_data_for_dotplot: False # Whether to generate data for dotplots comparing assembly to a reference genome. View dotplots at https://dot.sandbox.bio/
 find_telomeres: False # Whether to run tidk to find telomeric repeats
-repeat_masking: True # Whether to run repeatmasker to generate a masked reference genome
+repeat_masking: False # Whether to run repeatmasker to generate a masked reference genome
 # If you would like to provide a repeat library for masking place the file at sample_consensi.fa in the main directory. 
 # If no file is provided one will be generated from your genome using RepeatModeler. This process takes a very long time to run. 
+benchmarking: True # Whether to generate a ram usage report
 
 ### Parameters for optional operations
 
