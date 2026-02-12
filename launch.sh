@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --mem=400G
-#SBATCH -c62
+#SBATCH --mem=100G
+#SBATCH -c40
 #SBATCH --time=04-00:00:00
 
 #pixi run samtools fastq sample.bam > sample.fastq
