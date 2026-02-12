@@ -1,5 +1,5 @@
 ---
-#title: "Identifying H. m. rosina Scaffolds Using Hmel2.5"
+#title: "Identifying H. m. rosina Contigs Using Hmel2.5"
 author: "Krista Pipho"
 date: "`r Sys.Date()`"
 output: html_document
@@ -7,11 +7,11 @@ link-citations: true
 params:
     primary_genome: ""
     compare_genome: ""
-title: "Identifying `r params$primary_genome` scaffolds using `r params$compare_genome` as a reference"
+title: "Identifying `r params$primary_genome` contigs using `r params$compare_genome` as a reference"
 ---
 
 ```{r file_info, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev='png') 
 
 #To re-run this analysis with different assemblies, input the names of the desired assemblies below
 
@@ -42,9 +42,9 @@ busco_2 <- read.csv(paste0(prefix,genome2,"/",genome2,"_busco_table.txt"), heade
 
 ```{r Tables, echo=FALSE}
 quast_table <- tribble(
-   ~`QUAST Statistics`, ~`Scaffolds`, ~`L50`, ~`L75`,
-   quast_1$V1[1], quast_1$V1[2], quast_1$V1[3], quast_1$V1[4],
-   quast_2$V1[1], quast_2$V1[2], quast_2$V1[3], quast_2$V1[4],
+   ~`QUAST Statistics`, ~`Contigs`, ~`L50`, ~`L75`, ~`Total Length` 
+   quast_1$V1[1], quast_1$V1[2], quast_1$V1[3], quast_1$V1[4], quast_1$V1[5]
+   quast_2$V1[1], quast_2$V1[2], quast_2$V1[3], quast_2$V1[4], quast_2$V1[5]
 )
 
 busco_table <- tribble(
@@ -82,7 +82,7 @@ ggplot(combined_scaffold_table, aes(x = V2, fill=assembly)) +
   scale_y_log10() +
     theme_bw() +
   ylab("Count") +
-  xlab("Scaffold Size")+
+  xlab("Contig Size")+
   theme(text=element_text(size=21))
 ```
 
@@ -106,7 +106,7 @@ ggplot(full_busco_table_1, aes(x=reorder(Sequence, -n), y=n)) +
   geom_bar(stat = "identity") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
-  xlab(paste0(genome1," Scaffold Name")) +
+  xlab(paste0(genome1," Contig Name")) +
   ylab("Number of BUSCO Genes")
 
 ### Open genome2 BUSCO results
@@ -122,7 +122,7 @@ ggplot(full_busco_table_2, aes(x=reorder(Sequence, -n), y=n)) +
   geom_bar(stat = "identity") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+ 
-  xlab(paste0(genome2," Scaffold Name")) +
+  xlab(paste0(genome2," Contig Name")) +
   ylab("Number of BUSCO Genes") 
 
 ```
