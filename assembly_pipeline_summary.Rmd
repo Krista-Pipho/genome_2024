@@ -42,9 +42,9 @@ busco_2 <- read.csv(paste0(prefix,genome2,"/",genome2,"_busco_table.txt"), heade
 
 ```{r Tables, echo=FALSE}
 quast_table <- tribble(
-   ~`QUAST Statistics`, ~`Contigs`, ~`L50`, ~`L75`, ~`Total Length` 
-   quast_1$V1[1], quast_1$V1[2], quast_1$V1[3], quast_1$V1[4], quast_1$V1[5]
-   quast_2$V1[1], quast_2$V1[2], quast_2$V1[3], quast_2$V1[4], quast_2$V1[5]
+   ~`QUAST Statistics`, ~`Contigs`, ~`L50`, ~`L75`, ~`Total Length`,
+   quast_1$V1[1], quast_1$V1[2], quast_1$V1[3], quast_1$V1[4], quast_1$V1[5],
+   quast_2$V1[1], quast_2$V1[2], quast_2$V1[3], quast_2$V1[4], quast_2$V1[5],
 )
 
 busco_table <- tribble(
@@ -185,7 +185,7 @@ kable(scaffold.pairs)
 # Creates a modified overlap matrix and plots the result
 x_adj = x
 x_adj[x_adj == 0] <- -20 #  Changed to better visualize small non-zero overlap numbers
-pheatmap::pheatmap(x_adj,cluster_rows = FALSE)
+pheatmap::pheatmap(x_adj,cluster_rows = FALSE,cluster_cols = FALSE)
 
 
 ```
