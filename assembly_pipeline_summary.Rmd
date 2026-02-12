@@ -1,6 +1,4 @@
 ---
-#title: "Identifying H. m. rosina Contigs Using Hmel2.5"
-author: "Krista Pipho"
 date: "`r Sys.Date()`"
 output: html_document
 link-citations: true
@@ -43,8 +41,8 @@ busco_2 <- read.csv(paste0(prefix,genome2,"/",genome2,"_busco_table.txt"), heade
 ```{r Tables, echo=FALSE}
 quast_table <- tribble(
    ~`QUAST Statistics`, ~`Contigs`, ~`L50`, ~`L75`, ~`Total Length`,
-   quast_1$V1[1], quast_1$V1[2], quast_1$V1[3], quast_1$V1[4], quast_1$V1[5],
-   quast_2$V1[1], quast_2$V1[2], quast_2$V1[3], quast_2$V1[4], quast_2$V1[5],
+   quast_1$V1[1], quast_1$V1[2], quast_1$V1[3], quast_1$V1[4], paste0(round(as.numeric(quast_1$V1[5])/1000000)," mb"),
+   quast_2$V1[1], quast_2$V1[2], quast_2$V1[3], quast_2$V1[4], paste0(round(as.numeric(quast_2$V1[5])/1000000)," mb"),
 )
 
 busco_table <- tribble(
@@ -83,7 +81,7 @@ ggplot(combined_scaffold_table, aes(x = V2, fill=assembly)) +
     theme_bw() +
   ylab("Count") +
   xlab("Contig Size")+
-  theme(text=element_text(size=21))
+  theme(text=element_text(size=18))
 ```
 
 ### BUSCO Overview
@@ -105,7 +103,7 @@ full_busco_table_1 <- full_busco_1 %>%
 ggplot(full_busco_table_1, aes(x=reorder(Sequence, -n), y=n)) +
   geom_bar(stat = "identity") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), axis.title.x = element_text(size=18), axis.title.y = element_text(size = 18)) +  
   xlab(paste0(genome1," Contig Name")) +
   ylab("Number of BUSCO Genes")
 
@@ -121,7 +119,7 @@ full_busco_table_2 <- full_busco_2 %>%
 ggplot(full_busco_table_2, aes(x=reorder(Sequence, -n), y=n)) +
   geom_bar(stat = "identity") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), axis.title.x = element_text(size=18), axis.title.y = element_text(size = 18))+ 
   xlab(paste0(genome2," Contig Name")) +
   ylab("Number of BUSCO Genes") 
 
@@ -184,12 +182,13 @@ kable(scaffold.pairs)
 
 # Creates a modified overlap matrix and plots the result
 x_adj = x
-x_adj[x_adj == 0] <- -20 #  Changed to better visualize small non-zero overlap numbers
-pheatmap::pheatmap(x_adj,cluster_rows = FALSE,cluster_cols = FALSE)
+x_adj = x_adj + 1 #  Changed to better visualize small non-zero overlap numbers, and to prevent NA when taking log2
+slanter::sheatmap(log2(x_adj),cluster_rows = FALSE,cluster_cols = FALSE)
 
 
 ```
-Genome 1 is the y axis, genome 2 is the x axis 
+  
+Genome 1 is the y axis, genome 2 is the x axis. The data matrix has its values increased by one (to eliminate 0 values) and then log2 transformed to facilitate visualization of small BUSCO overlap values.  
 
 Finally, we view the relative sizes, in basepairs, of scaffolds identified as homologus.
 
