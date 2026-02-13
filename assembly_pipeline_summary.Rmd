@@ -24,7 +24,7 @@ prefix <- "results/"
 
 ```{r Packages, message=FALSE}
 if (!requireNamespace("slanter", quietly = TRUE)) {
-  install.packages("slanter")
+  install.packages("slanter", repos='[https://cloud.r-project.org](https://cloud.r-project.org/)')
 }
 
 library(tidyverse)
