@@ -23,9 +23,13 @@ prefix <- "results/"
 
 
 ```{r Packages, message=FALSE}
+if (!requireNamespace("slanter", quietly = TRUE)) {
+  install.packages("slanter")
+}
+
 library(tidyverse)
 library(kableExtra) # Formatting Tables
-library(pheatmap) # Plotting Heatmap
+library(slanter) # Plotting Heatmap
 library(ggrepel) # Visualizing homologus scaffold sizes
 ```
 
